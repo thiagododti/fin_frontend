@@ -26,7 +26,7 @@ export function AppSidebar() {
           className={cn("object-contain", collapsed ? "h-6 w-6" : "w-12")}
         />
         {!collapsed && (
-          <span className="text-sm font-semibold text-foreground tracking-tight">
+          <span className="text-sm text-foreground tracking-tight font-bold">
             WalletFy
           </span>
         )}

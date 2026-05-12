@@ -3,8 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Loader2, AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -29,63 +41,77 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-sm space-y-8">
-        <div className="flex flex-col items-center gap-3">
-          <img src="/logo.png" alt="Logo" className="w-32 object-contain" />
-          {/* <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-            <Activity className="h-6 w-6 text-primary" />
-          </div> */}
-          <h1 className="text-xl font-semibold text-foreground">Walletfy</h1>
-          <p className="text-sm text-muted-foreground">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="text-xl font-bold">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="mx-auto h-12 w-12 object-contain"
+            />
+            Walletfy
+          </CardTitle>
+          <CardDescription>
             Acesse sua conta para gerenciar suas finanças de forma fácil e
             eficiente.
-          </p>
-        </div>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <div className="flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                {error}
+              </div>
+            )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-              <AlertCircle className="h-4 w-4 shrink-0" />
-              {error}
-            </div>
-          )}
-
-          <div className="space-y-2">
-            <Label htmlFor="username" className="text-sm text-muted-foreground">
-              Usuário
-            </Label>
-            <Input
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="username"
-              required
-              className="bg-secondary border-border"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm text-muted-foreground">
-              Senha
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              className="bg-secondary border-border"
-            />
-          </div>
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            Entrar
-          </Button>
-        </form>
-      </div>
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="username">Usuário</FieldLabel>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </Field>
+              <Field>
+                <div className="flex items-center">
+                  <FieldLabel htmlFor="password">Senha</FieldLabel>
+                  <a
+                    href="#"
+                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                  >
+                    Esqueceu sua senha?
+                  </a>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+              </Field>
+              <Field>
+                <Button type="submit" disabled={loading}>
+                  {loading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Login
+                </Button>
+                <FieldDescription className="text-center">
+                  Não possui uma conta? <a href="#">Cadastre-se</a>
+                </FieldDescription>
+              </Field>
+            </FieldGroup>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
