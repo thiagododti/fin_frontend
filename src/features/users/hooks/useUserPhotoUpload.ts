@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef } from "react";
 
 export function useUserPhotoUpload() {
     const [photoFile, setPhotoFile] = useState<File | undefined>(undefined);
@@ -8,7 +8,7 @@ export function useUserPhotoUpload() {
     const resetPhoto = () => {
         setPhotoFile(undefined);
         setPhotoPreview(null);
-        if (fileInputRef.current) fileInputRef.current.value = '';
+        if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
     return {

@@ -42,7 +42,7 @@ export type ChangePassword = {
     current_password: string;
     new_password: string;
     confirm_password: string;
-}
+};
 
 export interface Token {
     key: string;
@@ -54,5 +54,4 @@ export interface TokenCreate {
     user_id: number;
 }
 
-export interface TokenRegenerate extends TokenCreate { }
-
+export interface TokenRegenerate extends TokenCreate {}

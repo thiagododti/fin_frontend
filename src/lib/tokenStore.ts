@@ -9,15 +9,15 @@ export const tokenStore = {
         _accessToken = token;
     },
 
-    getRefreshToken: () => sessionStorage.getItem('refresh_token'),
+    getRefreshToken: () => sessionStorage.getItem("refresh_token"),
 
     setRefreshToken: (token: string | null) => {
-        if (token) sessionStorage.setItem('refresh_token', token);
-        else sessionStorage.removeItem('refresh_token');
+        if (token) sessionStorage.setItem("refresh_token", token);
+        else sessionStorage.removeItem("refresh_token");
     },
 
     clear: () => {
         _accessToken = null;
-        sessionStorage.removeItem('refresh_token');
+        sessionStorage.removeItem("refresh_token");
     },
 };

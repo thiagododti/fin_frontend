@@ -1,6 +1,13 @@
-import { useMemo, useState } from 'react';
-import { KeyRound, Loader2, Copy, RefreshCcw, PlusCircle } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useMemo, useState } from "react";
+import { KeyRound, Loader2, Copy, RefreshCcw, PlusCircle } from "lucide-react";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -11,21 +18,21 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { useCreateToken, useRegenerateToken, useToken } from '../hooks';
-import { useAuth } from '@/features/auth/hooks';
-import type { User } from '../types';
-import { copyClipboard } from '@/lib/copyClipboardHttp';
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { useCreateToken, useRegenerateToken, useToken } from "../hooks";
+import { useAuth } from "@/features/auth/hooks";
+import type { User } from "../types";
+import { copyClipboard } from "@/lib/copyClipboardHttp";
 
 interface UserTokenDialogProps {
     user: User;
 }
 
 function formatDate(dateString: string) {
-    return new Intl.DateTimeFormat('pt-BR', {
-        dateStyle: 'short',
-        timeStyle: 'short',
+    return new Intl.DateTimeFormat("pt-BR", {
+        dateStyle: "short",
+        timeStyle: "short",
     }).format(new Date(dateString));
 }
 
@@ -52,7 +59,7 @@ export function UserTokenDialog({ user }: UserTokenDialogProps) {
         try {
             await createToken.mutateAsync({ user_id: user.id });
         } catch {
-            setErrorMessage('Nao foi possivel criar o token deste usuario.');
+            setErrorMessage("Nao foi possivel criar o token deste usuario.");
         }
     };
 
@@ -61,7 +68,9 @@ export function UserTokenDialog({ user }: UserTokenDialogProps) {
         try {
             await regenerateToken.mutateAsync({ user_id: user.id });
         } catch {
-            setErrorMessage('Nao foi possivel regenerar o token deste usuario.');
+            setErrorMessage(
+                "Nao foi possivel regenerar o token deste usuario.",
+            );
         }
     };
 
@@ -72,9 +81,9 @@ export function UserTokenDialog({ user }: UserTokenDialogProps) {
 
         try {
             copyClipboard(token.key);
-            setSuccessMessage('Token copiado para a area de transferencia.');
+            setSuccessMessage("Token copiado para a area de transferencia.");
         } catch {
-            setErrorMessage('Nao foi possivel copiar o token.');
+            setErrorMessage("Nao foi possivel copiar o token.");
         }
     };
 
@@ -93,7 +102,10 @@ export function UserTokenDialog({ user }: UserTokenDialogProps) {
                         Token de API
                     </DialogTitle>
                     <DialogDescription>
-                        Usuario: <span className="font-medium text-foreground">{dialogTitle}</span>
+                        Usuario:{" "}
+                        <span className="font-medium text-foreground">
+                            {dialogTitle}
+                        </span>
                     </DialogDescription>
                 </DialogHeader>
 
@@ -107,7 +119,9 @@ export function UserTokenDialog({ user }: UserTokenDialogProps) {
 
                     {!tokenQuery.isLoading && token && (
                         <div className="space-y-2 rounded-md border border-border bg-secondary/40 p-3">
-                            <p className="text-xs uppercase tracking-wide text-muted-foreground">Token atual</p>
+                            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                Token atual
+                            </p>
                             <p className="break-all rounded bg-background px-2 py-1 font-mono text-xs text-foreground">
                                 {token.key}
                             </p>
@@ -134,42 +148,73 @@ export function UserTokenDialog({ user }: UserTokenDialogProps) {
 
                     {!canManageToken && (
                         <p className="text-xs text-muted-foreground">
-                            O usuario autenticado nao possui permissao staff. Criacao e regeneracao de token estao bloqueadas.
+                            O usuario autenticado nao possui permissao staff.
+                            Criacao e regeneracao de token estao bloqueadas.
                         </p>
                     )}
 
                     {canManageToken && (
                         <div className="flex items-center justify-end gap-2">
                             {!token ? (
-                                <Button onClick={handleCreateToken} disabled={isMutating || tokenQuery.isLoading}>
-                                    {createToken.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-                                    {!createToken.isPending && <PlusCircle className="h-4 w-4" />}
+                                <Button
+                                    onClick={handleCreateToken}
+                                    disabled={
+                                        isMutating || tokenQuery.isLoading
+                                    }
+                                >
+                                    {createToken.isPending && (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    )}
+                                    {!createToken.isPending && (
+                                        <PlusCircle className="h-4 w-4" />
+                                    )}
                                     Criar token
                                 </Button>
                             ) : (
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <Button disabled={isMutating || tokenQuery.isLoading}>
-                                            {regenerateToken.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-                                            {!regenerateToken.isPending && <RefreshCcw className="h-4 w-4" />}
+                                        <Button
+                                            disabled={
+                                                isMutating ||
+                                                tokenQuery.isLoading
+                                            }
+                                        >
+                                            {regenerateToken.isPending && (
+                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                            )}
+                                            {!regenerateToken.isPending && (
+                                                <RefreshCcw className="h-4 w-4" />
+                                            )}
                                             Gerar novo token
                                         </Button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>
-                                            <AlertDialogTitle>Confirmar geração do novo token</AlertDialogTitle>
+                                            <AlertDialogTitle>
+                                                Confirmar geração do novo token
+                                            </AlertDialogTitle>
                                             <AlertDialogDescription>
-                                                Se você continuar, será gerado um novo token para este usuário,
-                                                e isso pode afetar a autenticação de todas as automações que utilizam
-                                                o token atual. Ao prosseguir, será necessário atualizar o
-                                                token das automações que ainda estiverem com o token antigo.
+                                                Se você continuar, será gerado
+                                                um novo token para este usuário,
+                                                e isso pode afetar a
+                                                autenticação de todas as
+                                                automações que utilizam o token
+                                                atual. Ao prosseguir, será
+                                                necessário atualizar o token das
+                                                automações que ainda estiverem
+                                                com o token antigo.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                            <AlertDialogCancel>
+                                                Cancelar
+                                            </AlertDialogCancel>
                                             <AlertDialogAction
                                                 onClick={handleRegenerateToken}
-                                                disabled={isMutating || tokenQuery.isLoading}
+                                                disabled={
+                                                    isMutating ||
+                                                    tokenQuery.isLoading
+                                                }
                                             >
                                                 Confirmar e gerar novo token
                                             </AlertDialogAction>
@@ -187,10 +232,14 @@ export function UserTokenDialog({ user }: UserTokenDialogProps) {
                     )}
 
                     {errorMessage && (
-                        <p className="text-sm text-destructive">{errorMessage}</p>
+                        <p className="text-sm text-destructive">
+                            {errorMessage}
+                        </p>
                     )}
                     {successMessage && (
-                        <p className="text-sm text-green-600">{successMessage}</p>
+                        <p className="text-sm text-green-600">
+                            {successMessage}
+                        </p>
                     )}
                 </div>
             </DialogContent>

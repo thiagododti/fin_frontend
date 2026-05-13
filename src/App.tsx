@@ -1,10 +1,10 @@
-import { AppProviders } from '@/providers/AppProviders';
-import { AppRoutes } from '@/routes';
+import { AppProviders } from "@/providers/AppProviders";
+import { AppRoutes } from "@/routes";
 
 const App = () => (
-  <AppProviders>
-    <AppRoutes />
-  </AppProviders>
+    <AppProviders>
+        <AppRoutes />
+    </AppProviders>
 );
 
 export default App;

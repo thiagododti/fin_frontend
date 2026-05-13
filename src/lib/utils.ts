@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+    return twMerge(clsx(inputs));
 }
 
 /**
@@ -10,5 +10,5 @@ export function cn(...inputs: ClassValue[]) {
  * Ex: "12.345-67" → "1234567"
  */
 export function onlyDigits(value: string): string {
-  return value.replace(/\D/g, '');
+    return value.replace(/\D/g, "");
 }

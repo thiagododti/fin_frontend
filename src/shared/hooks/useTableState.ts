@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export function useTableState<TFilters extends Record<string, unknown>>() {
     const [filters, setFilters] = useState<TFilters>({} as TFilters);

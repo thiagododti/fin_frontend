@@ -1,49 +1,56 @@
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { usersApi } from '../api';
-import { queryKeys } from '@/lib/queryKeys';
-import { useUserPhotoUpload } from './useUserPhotoUpload';
-import type { UserCreate, UserUpdate } from '../types';
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { usersApi } from "../api";
+import { queryKeys } from "@/lib/queryKeys";
+import { useUserPhotoUpload } from "./useUserPhotoUpload";
+import type { UserCreate, UserUpdate } from "../types";
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
-export const userFormSchema = z.object({
-    username: z.string().min(1, 'Usuário é obrigatório'),
-    email: z.union([z.string().email('Email inválido'), z.literal('')]).optional(),
-    first_name: z.string().optional().default(''),
-    last_name: z.string().optional().default(''),
-    telephone: z.string().optional().default(''),
-    birthday: z.string().optional().default(''),
-    department: z.number().optional(),
-    is_active: z.boolean(),
-    is_staff: z.boolean(),
-    is_superuser: z.boolean(),
-    password: z.string().optional(),
-    password2: z.string().optional(),
-}).refine((data) => {
-    if (data.password) return data.password === data.password2;
-    return true;
-}, { message: 'As senhas não coincidem', path: ['password2'] });
+export const userFormSchema = z
+    .object({
+        username: z.string().min(1, "Usuário é obrigatório"),
+        email: z
+            .union([z.string().email("Email inválido"), z.literal("")])
+            .optional(),
+        first_name: z.string().optional().default(""),
+        last_name: z.string().optional().default(""),
+        telephone: z.string().optional().default(""),
+        birthday: z.string().optional().default(""),
+        department: z.number().optional(),
+        is_active: z.boolean(),
+        is_staff: z.boolean(),
+        is_superuser: z.boolean(),
+        password: z.string().optional(),
+        password2: z.string().optional(),
+    })
+    .refine(
+        (data) => {
+            if (data.password) return data.password === data.password2;
+            return true;
+        },
+        { message: "As senhas não coincidem", path: ["password2"] },
+    );
 
 export type UserFormData = z.infer<typeof userFormSchema>;
 
 const defaultValues: UserFormData = {
-    username: '',
-    email: '',
-    first_name: '',
-    last_name: '',
-    telephone: '',
-    birthday: '',
+    username: "",
+    email: "",
+    first_name: "",
+    last_name: "",
+    telephone: "",
+    birthday: "",
     department: undefined,
     is_active: true,
     is_staff: false,
     is_superuser: false,
-    password: '',
-    password2: '',
+    password: "",
+    password2: "",
 };
 
 export interface UserEditData {
@@ -70,15 +77,23 @@ interface UseUserFormProps {
     onClose?: () => void;
 }
 
-export function useUserForm({ open, editData, onSuccess, onClose }: UseUserFormProps) {
+export function useUserForm({
+    open,
+    editData,
+    onSuccess,
+    onClose,
+}: UseUserFormProps) {
     const qc = useQueryClient();
     const createMutation = useMutation({
         mutationFn: (data: UserCreate) => usersApi.create(data),
-        onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
+        onSuccess: () =>
+            qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
     });
     const updateMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: UserUpdate }) => usersApi.patch(id, data),
-        onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
+        mutationFn: ({ id, data }: { id: number; data: UserUpdate }) =>
+            usersApi.patch(id, data),
+        onSuccess: () =>
+            qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
     });
     const photo = useUserPhotoUpload();
 
@@ -96,14 +111,14 @@ export function useUserForm({ open, editData, onSuccess, onClose }: UseUserFormP
                 email: editData.email,
                 first_name: editData.first_name,
                 last_name: editData.last_name,
-                telephone: editData.telephone || '',
-                birthday: editData.birthday || '',
+                telephone: editData.telephone || "",
+                birthday: editData.birthday || "",
                 department: editData.department ?? undefined,
                 is_active: editData.is_active ?? true,
                 is_staff: editData.is_staff ?? false,
                 is_superuser: editData.is_superuser ?? false,
-                password: '',
-                password2: '',
+                password: "",
+                password2: "",
             });
             photo.setPhotoPreview(editData.photo || null);
         }
@@ -111,11 +126,13 @@ export function useUserForm({ open, editData, onSuccess, onClose }: UseUserFormP
 
     const submitHandler = async (data: UserFormData) => {
         if (!editData && !data.password) {
-            setError('password', { message: 'Senha é obrigatória' });
+            setError("password", { message: "Senha é obrigatória" });
             return;
         }
         if (!editData && !data.password2) {
-            setError('password2', { message: 'Confirmação de senha é obrigatória' });
+            setError("password2", {
+                message: "Confirmação de senha é obrigatória",
+            });
             return;
         }
         try {
@@ -132,16 +149,19 @@ export function useUserForm({ open, editData, onSuccess, onClose }: UseUserFormP
                 };
                 if (data.password) {
                     updateData.password = data.password;
-                    updateData.password2 = data.password2;   // ✅ adicionar
+                    updateData.password2 = data.password2; // ✅ adicionar
                 }
                 if (photo.photoFile) updateData.photo = photo.photoFile;
-                await updateMutation.mutateAsync({ id: editData.id, data: updateData });
+                await updateMutation.mutateAsync({
+                    id: editData.id,
+                    data: updateData,
+                });
             } else {
                 await createMutation.mutateAsync({
                     username: data.username,
-                    email: data.email || '',
-                    first_name: data.first_name || '',
-                    last_name: data.last_name || '',
+                    email: data.email || "",
+                    first_name: data.first_name || "",
+                    last_name: data.last_name || "",
                     birth_date: data.birthday,
                     is_active: data.is_active,
                     is_staff: data.is_staff,
@@ -155,8 +175,10 @@ export function useUserForm({ open, editData, onSuccess, onClose }: UseUserFormP
             photo.resetPhoto();
             onSuccess?.();
         } catch (error) {
-            console.error('Erro ao salvar usuário:', error);
-            toast.error('Erro ao salvar usuário. Verifique os dados e tente novamente.');
+            console.error("Erro ao salvar usuário:", error);
+            toast.error(
+                "Erro ao salvar usuário. Verifique os dados e tente novamente.",
+            );
         }
     };
 

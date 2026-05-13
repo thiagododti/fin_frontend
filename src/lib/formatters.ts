@@ -4,7 +4,7 @@
  * para garantir consistência visual em toda a aplicação.
  */
 
-export type GroupBy = 'day' | 'week' | 'month';
+export type GroupBy = "day" | "week" | "month";
 
 // ---------------------------------------------------------------------------
 // Numéricos
@@ -15,19 +15,19 @@ export type GroupBy = 'day' | 'week' | 'month';
  * Retorna 0 em caso de valor inválido ou ausente.
  */
 export function toNumber(value: string | number | undefined): number {
-    if (typeof value === 'number') return value;
+    if (typeof value === "number") return value;
     if (!value) return 0;
 
     // "1.234,56" → 1234.56
-    if (value.includes('.') && value.includes(',')) {
-        const normalized = value.replace(/\./g, '').replace(',', '.');
+    if (value.includes(".") && value.includes(",")) {
+        const normalized = value.replace(/\./g, "").replace(",", ".");
         const n = Number(normalized);
         return Number.isFinite(n) ? n : 0;
     }
 
     // "1234,56" → 1234.56
-    if (value.includes(',')) {
-        const n = Number(value.replace(',', '.'));
+    if (value.includes(",")) {
+        const n = Number(value.replace(",", "."));
         return Number.isFinite(n) ? n : 0;
     }
 
@@ -44,9 +44,9 @@ export function toNumber(value: string | number | undefined): number {
  * Aceita string, número ou undefined.
  */
 export function formatCurrency(value: string | number | undefined): string {
-    return new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
+    return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
         maximumFractionDigits: 2,
     }).format(toNumber(value));
 }
@@ -80,7 +80,7 @@ export function formatSeconds(seconds: number): string {
  * Ex: 0 → "—" | 45 → "45s" | 150 → "2m 30s"
  */
 export function formatManualTime(seconds: number | undefined | null): string {
-    if (!seconds) return '—';
+    if (!seconds) return "—";
     return formatSeconds(seconds);
 }
 
@@ -113,16 +113,16 @@ export function formatCompactSeconds(seconds: number | undefined): string {
  * Retorna "—" para valores nulos, vazios ou inválidos.
  */
 export function formatDateTime(value: string | null | undefined): string {
-    if (!value) return '—';
+    if (!value) return "—";
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return '—';
-    return date.toLocaleString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
+    if (Number.isNaN(date.getTime())) return "—";
+    return date.toLocaleString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
     });
 }
 
@@ -134,13 +134,22 @@ export function formatPeriod(period: string, groupBy: GroupBy): string {
     const date = new Date(`${period}T00:00:00`);
     if (Number.isNaN(date.getTime())) return period;
 
-    if (groupBy === 'day') {
-        return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit' }).format(date);
+    if (groupBy === "day") {
+        return new Intl.DateTimeFormat("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+        }).format(date);
     }
 
-    if (groupBy === 'week') {
-        return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(date);
+    if (groupBy === "week") {
+        return new Intl.DateTimeFormat("pt-BR", {
+            day: "2-digit",
+            month: "short",
+        }).format(date);
     }
 
-    return new Intl.DateTimeFormat('pt-BR', { month: 'short', year: '2-digit' }).format(date);
+    return new Intl.DateTimeFormat("pt-BR", {
+        month: "short",
+        year: "2-digit",
+    }).format(date);
 }

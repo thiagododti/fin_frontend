@@ -8,30 +8,32 @@ import { AuthProvider } from "@/features/auth/context";
 import { ThemeProvider } from "./ThemeProvider";
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
+    defaultOptions: {
+        queries: {
+            retry: 1,
+            refetchOnWindowFocus: false,
+        },
     },
-  },
 });
 
 interface AppProvidersProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
 export function AppProviders({ children }: AppProvidersProps) {
-  return (
-    <ThemeProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <BrowserRouter>
-            <AuthProvider>{children}</AuthProvider>
-          </BrowserRouter>
-        </TooltipProvider>
-        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
-      </QueryClientProvider>
-    </ThemeProvider>
-  );
+    return (
+        <ThemeProvider>
+            <QueryClientProvider client={queryClient}>
+                <TooltipProvider>
+                    <Toaster />
+                    <BrowserRouter>
+                        <AuthProvider>{children}</AuthProvider>
+                    </BrowserRouter>
+                </TooltipProvider>
+                {import.meta.env.DEV && (
+                    <ReactQueryDevtools initialIsOpen={false} />
+                )}
+            </QueryClientProvider>
+        </ThemeProvider>
+    );
 }

@@ -1,7 +1,7 @@
-import { Component } from 'react';
-import type { ReactNode, ErrorInfo } from 'react';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Component } from "react";
+import type { ReactNode, ErrorInfo } from "react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Props {
     children: ReactNode;
@@ -25,7 +25,7 @@ export class ErrorBoundary extends Component<Props, State> {
     }
 
     componentDidCatch(error: Error, info: ErrorInfo) {
-        console.error('[ErrorBoundary]', error, info.componentStack);
+        console.error("[ErrorBoundary]", error, info.componentStack);
     }
 
     handleReset = () => {

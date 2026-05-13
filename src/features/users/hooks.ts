@@ -1,15 +1,24 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { usersApi, tokenApi } from './api';
-import { queryKeys } from '@/lib/queryKeys';
-import type { UserFilters, UserCreate, UserUpdate, Token, TokenCreate, TokenRegenerate, ChangePassword } from './types';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { usersApi, tokenApi } from "./api";
+import { queryKeys } from "@/lib/queryKeys";
+import type {
+    UserFilters,
+    UserCreate,
+    UserUpdate,
+    Token,
+    TokenCreate,
+    TokenRegenerate,
+    ChangePassword,
+} from "./types";
 
 // ─── Users query hooks ────────────────────────────────────────────────────────
 
 export function useUsers(filters?: UserFilters, page = 1) {
     return useQuery({
         queryKey: queryKeys.users.list(filters, page),
-        queryFn: () => usersApi.list({ ...filters, page }).then((res) => res.data),
+        queryFn: () =>
+            usersApi.list({ ...filters, page }).then((res) => res.data),
     });
 }
 
@@ -25,15 +34,18 @@ export function useCreateUser() {
     const qc = useQueryClient();
     return useMutation({
         mutationFn: (data: UserCreate) => usersApi.create(data),
-        onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
+        onSuccess: () =>
+            qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
     });
 }
 
 export function useUpdateUser() {
     const qc = useQueryClient();
     return useMutation({
-        mutationFn: ({ id, data }: { id: number; data: UserUpdate }) => usersApi.patch(id, data),
-        onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
+        mutationFn: ({ id, data }: { id: number; data: UserUpdate }) =>
+            usersApi.patch(id, data),
+        onSuccess: () =>
+            qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
     });
 }
 
@@ -41,7 +53,8 @@ export function useChangePassword() {
     const qc = useQueryClient();
     return useMutation({
         mutationFn: (data: ChangePassword) => usersApi.changePassword(data),
-        onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
+        onSuccess: () =>
+            qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
     });
 }
 
@@ -72,7 +85,9 @@ export function useCreateToken() {
     return useMutation<Token, Error, TokenCreate>({
         mutationFn: (data) => tokenApi.create(data).then((res) => res.data),
         onSuccess: (_, variables) => {
-            qc.invalidateQueries({ queryKey: queryKeys.tokens.detail(variables.user_id) });
+            qc.invalidateQueries({
+                queryKey: queryKeys.tokens.detail(variables.user_id),
+            });
         },
     });
 }
@@ -82,7 +97,9 @@ export function useRegenerateToken() {
     return useMutation<Token, Error, TokenRegenerate>({
         mutationFn: (data) => tokenApi.regenerate(data).then((res) => res.data),
         onSuccess: (_, variables) => {
-            qc.invalidateQueries({ queryKey: queryKeys.tokens.detail(variables.user_id) });
+            qc.invalidateQueries({
+                queryKey: queryKeys.tokens.detail(variables.user_id),
+            });
         },
     });
 }
@@ -90,6 +107,6 @@ export function useRegenerateToken() {
 // ─── User form hook ──────────────────────────────────────────────────────────
 // Extraído para hooks/useUserForm.ts e hooks/useUserPhotoUpload.ts
 
-export type { UserFormData, UserEditData } from './hooks/useUserForm';
-export { useUserForm } from './hooks/useUserForm';
-export { useUserPhotoUpload } from './hooks/useUserPhotoUpload';
+export type { UserFormData, UserEditData } from "./hooks/useUserForm";
+export { useUserForm } from "./hooks/useUserForm";
+export { useUserPhotoUpload } from "./hooks/useUserPhotoUpload";
