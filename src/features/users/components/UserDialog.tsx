@@ -26,7 +26,6 @@ import {
     X,
     Key,
 } from "lucide-react";
-
 interface UserDialogProps {
     onSuccess?: () => void;
     onClose?: () => void;
@@ -75,7 +74,7 @@ export function UserDialog({ onSuccess, onClose, editData }: UserDialogProps) {
                     Novo Usuário
                 </Button>
             </DialogTrigger>
-            <DialogContent className="bg-card border-border sm:max-w-[680px]">
+            <DialogContent className="bg-card border-border sm:max-w-[900px]">
                 <DialogHeader className="pb-3">
                     <DialogTitle className="text-foreground flex items-center gap-2 text-lg">
                         <UserRound className="h-5 w-5 text-primary" />
@@ -120,7 +119,7 @@ export function UserDialog({ onSuccess, onClose, editData }: UserDialogProps) {
                                             </button>
                                         )}
                                     </div>
-                                    <input
+                                    <Input
                                         ref={fileInputRef}
                                         type="file"
                                         accept="image/*"
@@ -236,7 +235,7 @@ export function UserDialog({ onSuccess, onClose, editData }: UserDialogProps) {
                             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                 Permissões
                             </p>
-                            <div className="space-y-2 ">
+                            <div className="flex flex-row gap-3 justify-around">
                                 <div className="flex items-center justify-between rounded-lg border border-border bg-secondary/30 px-4 py-3">
                                     <div className="flex items-center gap-3">
                                         <CircleCheck className="h-4 w-4 text-muted-foreground shrink-0" />
