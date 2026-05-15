@@ -4,12 +4,3 @@ export interface PaginatedResponse<T> {
     previous: string | null;
     results: T[];
 }
-
-export interface ApiError {
-    detail?: string;
-    [key: string]: unknown;
-}
-
-export interface ApiResponse {
-    detail: string;
-}
