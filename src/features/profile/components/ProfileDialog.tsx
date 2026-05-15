@@ -16,8 +16,8 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { UserPhotoField } from "@/shared/components/UserPhotoField";
 import { useProfileForm } from "../hooks/useProfileForm";
-import { UserPhotoField } from "./UserPhotoField";
 
 interface ProfileDialogProps {
     open: boolean;
@@ -105,27 +105,6 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
                                         )}
                                     />
                                 </div>
-                                <FormField
-                                    control={form.control}
-                                    name="email"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-sm text-foreground">
-                                                Email
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="email"
-                                                    placeholder="email@exemplo.com"
-                                                    disabled
-                                                    className="bg-secondary border-border"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
                             </div>
                         </div>
 

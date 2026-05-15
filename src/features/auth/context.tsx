@@ -7,18 +7,18 @@ import React, {
 } from "react";
 import type { User } from "@/features/users/types";
 import type { AuthContextType } from "./types";
-import { authApi } from "./api";
-import { usersApi } from "@/features/users/api";
-import { decodeJwt, isTokenExpired, getTokenExpiry } from "@/lib/jwt";
+import { authApi } from "./authService";
+import { profileApi } from "@/features/profile/api";
+import { isTokenExpired, getTokenExpiry } from "@/lib/jwt";
 import { tokenStore } from "@/lib/tokenStore";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
     undefined,
 );
 
-async function fetchUserById(userId: number): Promise<User | null> {
+async function fetchCurrentUser(): Promise<User | null> {
     try {
-        const { data } = await usersApi.getById(userId);
+        const { data } = await profileApi.me();
         return data;
     } catch {
         return null;
@@ -79,15 +79,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const { data } = await authApi.login({ username, password });
         tokenStore.setAccessToken(data.access);
         tokenStore.setRefreshToken(data.refresh);
-        const decoded = decodeJwt(data.access);
-        const userId = Number(decoded?.user_id);
 
-        if (!Number.isFinite(userId)) {
-            tokenStore.clear();
-            throw new Error("Token sem user_id valido");
-        }
-
-        const fullUser = await fetchUserById(userId);
+        const fullUser = await fetchCurrentUser();
         if (!fullUser) {
             tokenStore.clear();
             throw new Error("Nao foi possivel carregar o usuario autenticado");
@@ -153,18 +146,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             }
 
             if (validToken) {
-                const decoded = decodeJwt(validToken);
-                const userId = Number(decoded?.user_id);
-
-                if (Number.isFinite(userId)) {
-                    const fullUser = await fetchUserById(userId);
-                    if (fullUser) {
-                        setUser(fullUser);
-                        if (latestRefreshToken)
-                            scheduleLogout(latestRefreshToken);
-                    } else {
-                        tokenStore.clear();
-                    }
+                const fullUser = await fetchCurrentUser();
+                if (fullUser) {
+                    setUser(fullUser);
+                    if (latestRefreshToken) scheduleLogout(latestRefreshToken);
                 } else {
                     tokenStore.clear();
                 }

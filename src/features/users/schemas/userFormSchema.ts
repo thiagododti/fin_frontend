@@ -9,7 +9,7 @@ export const userFormSchema = z
         first_name: z.string().optional().default(""),
         last_name: z.string().optional().default(""),
         telephone: z.string().optional().default(""),
-        birthday: z.string().optional().default(""),
+        birth_date: z.string().optional().default(""),
         department: z.number().optional(),
         is_active: z.boolean(),
         is_staff: z.boolean(),
@@ -27,13 +27,15 @@ export const userFormSchema = z
 
 export type UserFormData = z.infer<typeof userFormSchema>;
 
+export type { UserEditData } from "../types";
+
 export const defaultValues: UserFormData = {
     username: "",
     email: "",
     first_name: "",
     last_name: "",
     telephone: "",
-    birthday: "",
+    birth_date: "",
     department: undefined,
     is_active: true,
     is_staff: false,
@@ -41,18 +43,3 @@ export const defaultValues: UserFormData = {
     password: "",
     password2: "",
 };
-
-export interface UserEditData {
-    id: number;
-    username: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-    telephone?: string | null;
-    birthday?: string | null;
-    department?: number | null;
-    is_active?: boolean;
-    is_staff?: boolean;
-    is_superuser?: boolean;
-    photo?: string | null;
-}

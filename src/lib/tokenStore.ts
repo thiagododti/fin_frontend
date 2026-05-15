@@ -1,5 +1,5 @@
 // access_token fica apenas em memória (nunca serializado em storage)
-// refresh_token fica em sessionStorage (escopo por aba, limpo ao fechar o browser)
+// refresh_token fica em localStorage (persiste entre abas e reinicializações do browser)
 let _accessToken: string | null = null;
 
 export const tokenStore = {
@@ -9,15 +9,15 @@ export const tokenStore = {
         _accessToken = token;
     },
 
-    getRefreshToken: () => sessionStorage.getItem("refresh_token"),
+    getRefreshToken: () => localStorage.getItem("refresh_token"),
 
     setRefreshToken: (token: string | null) => {
-        if (token) sessionStorage.setItem("refresh_token", token);
-        else sessionStorage.removeItem("refresh_token");
+        if (token) localStorage.setItem("refresh_token", token);
+        else localStorage.removeItem("refresh_token");
     },
 
     clear: () => {
         _accessToken = null;
-        sessionStorage.removeItem("refresh_token");
+        localStorage.removeItem("refresh_token");
     },
 };

@@ -9,9 +9,13 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
-import { UserTokenDialog } from "./UserTokenDialog";
+import {
+    Avatar,
+    AvatarImage,
+    AvatarFallback,
+    AvatarBadge,
+} from "@/components/ui/avatar";
+import { cn, formatDate } from "@/lib/utils";
 import type { User } from "../types";
 import type { PaginatedResponse } from "@/shared/types/api";
 
@@ -50,13 +54,16 @@ export function UserTable({ data, isLoading, onEdit }: UserTableProps) {
                             Usuário
                         </TableHead>
                         <TableHead className="text-muted-foreground">
-                            Telefone
+                            E-mail
+                        </TableHead>
+                        <TableHead className="text-muted-foreground">
+                            Nascimento
+                        </TableHead>
+                        <TableHead className="text-muted-foreground">
+                            Membro desde
                         </TableHead>
                         <TableHead className="text-muted-foreground">
                             Permissões
-                        </TableHead>
-                        <TableHead className="text-muted-foreground">
-                            Status
                         </TableHead>
                         <TableHead className="text-muted-foreground w-10"></TableHead>
                     </TableRow>
@@ -64,21 +71,30 @@ export function UserTable({ data, isLoading, onEdit }: UserTableProps) {
                 <TableBody>
                     {data?.results.map((user) => (
                         <TableRow key={user.id} className="border-border">
-                            {/* Avatar + username + email */}
+                            {/* Avatar + nome + username */}
                             <TableCell>
                                 <div className="flex items-center gap-3">
-                                    <Avatar className="h-9 w-9 shrink-0">
-                                        <AvatarImage
-                                            src={user.photo ?? undefined}
-                                        />
-                                        <AvatarFallback className="bg-secondary text-xs font-medium text-foreground">
-                                            {getInitials(
-                                                user.first_name,
-                                                user.last_name,
-                                                user.username,
+                                    <div className="relative shrink-0">
+                                        <Avatar className="h-9 w-9">
+                                            <AvatarImage
+                                                src={user.photo ?? undefined}
+                                            />
+                                            <AvatarFallback className="bg-secondary text-xs font-medium text-foreground">
+                                                {getInitials(
+                                                    user.first_name,
+                                                    user.last_name,
+                                                    user.username,
+                                                )}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <AvatarBadge
+                                            className={cn(
+                                                user.is_active
+                                                    ? "bg-green-500"
+                                                    : "bg-red-500",
                                             )}
-                                        </AvatarFallback>
-                                    </Avatar>
+                                        />
+                                    </div>
                                     <div className="min-w-0">
                                         <p className="text-sm font-medium text-foreground truncate">
                                             {user.first_name || user.last_name
@@ -87,11 +103,36 @@ export function UserTable({ data, isLoading, onEdit }: UserTableProps) {
                                         </p>
                                         <p className="text-xs text-muted-foreground truncate">
                                             @{user.username}
-                                            {user.email && ` · ${user.email}`}
                                         </p>
                                     </div>
                                 </div>
                             </TableCell>
+
+                            {/* E-mail */}
+                            <TableCell>
+                                <span className="text-sm text-foreground">
+                                    {user.email || (
+                                        <span className="text-muted-foreground">
+                                            —
+                                        </span>
+                                    )}
+                                </span>
+                            </TableCell>
+
+                            {/* Nascimento */}
+                            <TableCell>
+                                <span className="text-sm text-foreground">
+                                    {formatDate(user.birth_date)}
+                                </span>
+                            </TableCell>
+
+                            {/* Membro desde */}
+                            <TableCell>
+                                <span className="text-sm text-foreground">
+                                    {formatDate(user.date_joined)}
+                                </span>
+                            </TableCell>
+
                             {/* Permissões */}
                             <TableCell>
                                 <div className="flex items-center gap-1.5">
@@ -121,25 +162,9 @@ export function UserTable({ data, isLoading, onEdit }: UserTableProps) {
                                 </div>
                             </TableCell>
 
-                            {/* Status */}
-                            <TableCell>
-                                <Badge
-                                    variant="outline"
-                                    className={cn(
-                                        "border-transparent",
-                                        user.is_active
-                                            ? "bg-success/15 text-success hover:bg-success/20"
-                                            : "bg-muted text-muted-foreground hover:bg-muted/80",
-                                    )}
-                                >
-                                    {user.is_active ? "Ativo" : "Inativo"}
-                                </Badge>
-                            </TableCell>
-
                             {/* Ações */}
                             <TableCell>
                                 <div className="flex items-center justify-end gap-1">
-                                    <UserTokenDialog user={user} />
                                     <Button
                                         variant="ghost"
                                         size="sm"

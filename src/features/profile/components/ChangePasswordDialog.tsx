@@ -1,13 +1,5 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import { Loader2, KeyRound, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
-import { useChangePassword } from "../hooks";
-import {
-    changePasswordSchema,
-    type ChangePasswordFormData,
-} from "../schemas/changePasswordSchema";
+import { useChangePasswordForm } from "../hooks/useChangePasswordForm";
 import {
     Dialog,
     DialogContent,
@@ -35,34 +27,18 @@ export function ChangePasswordDialog({
     open,
     onOpenChange,
 }: ChangePasswordDialogProps) {
-    const [showCurrent, setShowCurrent] = useState(false);
-    const [showNew, setShowNew] = useState(false);
-    const [showConfirm, setShowConfirm] = useState(false);
-
-    const form = useForm<ChangePasswordFormData>({
-        resolver: zodResolver(changePasswordSchema),
-    });
-
-    const { mutate, isPending } = useChangePassword();
-
-    const onSubmit = (data: ChangePasswordFormData) =>
-        mutate(data, {
-            onSuccess: () => {
-                toast.success("Senha alterada com sucesso!");
-                form.reset();
-                onOpenChange(false);
-            },
-            onError: () => {
-                toast.error(
-                    "Falha ao alterar senha. Verifique a senha atual e tente novamente.",
-                );
-            },
-        });
-
-    const handleOpenChange = (v: boolean) => {
-        if (!v) form.reset();
-        onOpenChange(v);
-    };
+    const {
+        form,
+        onSubmit,
+        isPending,
+        handleOpenChange,
+        showCurrent,
+        setShowCurrent,
+        showNew,
+        setShowNew,
+        showConfirm,
+        setShowConfirm,
+    } = useChangePasswordForm({ onClose: () => onOpenChange(false) });
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -75,10 +51,7 @@ export function ChangePasswordDialog({
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-4 pt-1"
-                    >
+                    <form onSubmit={onSubmit} className="space-y-4 pt-1">
                         <FormField
                             control={form.control}
                             name="current_password"

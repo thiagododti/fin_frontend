@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuth } from "@/features/auth/hooks";
-import { usersApi } from "../api";
+import { useUpdateMe } from "./useProfileQueries";
 import {
     profileSchema,
     type ProfileFormValues,
 } from "../schemas/profileSchema";
-import type { UserUpdate } from "../types";
+import type { ProfileUpdate } from "../types";
 
 export type { ProfileFormValues };
 
@@ -29,7 +28,6 @@ export function useProfileForm({ open, onClose }: UseProfileFormProps) {
         defaultValues: {
             first_name: "",
             last_name: "",
-            email: "",
             birth_date: "",
         },
     });
@@ -41,7 +39,6 @@ export function useProfileForm({ open, onClose }: UseProfileFormProps) {
             reset({
                 first_name: user.first_name ?? "",
                 last_name: user.last_name ?? "",
-                email: user.email ?? "",
                 birth_date: user.birth_date ?? "",
             });
             setPhotoPreview(user.photo ?? null);
@@ -49,30 +46,27 @@ export function useProfileForm({ open, onClose }: UseProfileFormProps) {
         }
     }, [open, user, reset]);
 
-    const mutation = useMutation({
-        mutationFn: (values: ProfileFormValues) => {
-            if (!user) throw new Error("Usuário não autenticado");
-            const patch: UserUpdate = {
-                username: user.username,
-                first_name: values.first_name,
-                last_name: values.last_name,
-                email: values.email || undefined,
-                birth_date: values.birth_date,
-                ...(photoFile ? { photo: photoFile } : {}),
-            };
-            return usersApi.patch(user.id, patch);
-        },
-        onSuccess: ({ data }) => {
-            updateUser(data);
-            toast.success("Perfil atualizado com sucesso!");
-            onClose();
-        },
-        onError: () => {
-            toast.error("Erro ao atualizar perfil. Tente novamente.");
-        },
-    });
+    const updateMutation = useUpdateMe();
 
-    const onSubmit = handleSubmit((values) => mutation.mutate(values));
+    const onSubmit = handleSubmit((values: ProfileFormValues) => {
+        if (!user) return;
+        const patch: ProfileUpdate = {
+            first_name: values.first_name,
+            last_name: values.last_name,
+            birth_date: values.birth_date,
+            ...(photoFile ? { photo: photoFile } : {}),
+        };
+        updateMutation.mutate(patch, {
+            onSuccess: (updated) => {
+                updateUser({ ...user, ...updated });
+                toast.success("Perfil atualizado com sucesso!");
+                onClose();
+            },
+            onError: () => {
+                toast.error("Erro ao atualizar perfil. Tente novamente.");
+            },
+        });
+    });
 
     const resetPhoto = () => {
         setPhotoPreview(null);
@@ -83,7 +77,7 @@ export function useProfileForm({ open, onClose }: UseProfileFormProps) {
     return {
         form,
         onSubmit,
-        isPending: mutation.isPending,
+        isPending: updateMutation.isPending,
         photoPreview,
         setPhotoPreview,
         photoFile,

@@ -1,3 +1,8 @@
+---
+description: "Use ao criar ou editar componentes React, hooks, páginas, serviços ou qualquer arquivo TypeScript/TSX do projeto"
+applyTo: "src/**/*.{ts,tsx}"
+---
+
 # Regras para desenvolvimento em React
 
 > Estas instruções priorizam clareza e consistência sem over-engineering.

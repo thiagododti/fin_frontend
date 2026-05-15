@@ -39,20 +39,17 @@ export interface UserFilters {
     [key: string]: unknown;
 }
 
-export type ChangePassword = {
-    current_password: string;
-    new_password: string;
-    confirm_password: string;
-};
-
-export interface Token {
-    key: string;
-    user: number;
-    created: string;
+export interface UserEditData {
+    id: number;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    telephone?: string | null;
+    birth_date?: string | null;
+    department?: number | null;
+    is_active?: boolean;
+    is_staff?: boolean;
+    is_superuser?: boolean;
+    photo?: string | null;
 }
-
-export interface TokenCreate {
-    user_id: number;
-}
-
-export interface TokenRegenerate extends TokenCreate {}

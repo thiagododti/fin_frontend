@@ -28,7 +28,7 @@ const AUTH_ENDPOINTS = [
 
 const isAuthEndpointRequest = (requestUrl?: string) => {
     if (!requestUrl) return false;
-    return AUTH_ENDPOINTS.some((endpoint) => requestUrl.includes(endpoint));
+    return AUTH_ENDPOINTS.some((endpoint) => requestUrl.endsWith(endpoint));
 };
 
 api.interceptors.request.use((config) => {

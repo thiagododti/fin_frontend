@@ -2,11 +2,9 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { usersApi } from "../api";
-import { queryKeys } from "@/lib/queryKeys";
+import { useCreateUser, useUpdateUser } from "../hooks";
 import { useUserPhotoUpload } from "./useUserPhotoUpload";
-import type { UserCreate, UserUpdate } from "../types";
+import type { UserUpdate } from "../types";
 import {
     userFormSchema,
     defaultValues,
@@ -31,18 +29,8 @@ export function useUserForm({
     onSuccess,
     onClose,
 }: UseUserFormProps) {
-    const qc = useQueryClient();
-    const createMutation = useMutation({
-        mutationFn: (data: UserCreate) => usersApi.create(data),
-        onSuccess: () =>
-            qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
-    });
-    const updateMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: UserUpdate }) =>
-            usersApi.patch(id, data),
-        onSuccess: () =>
-            qc.invalidateQueries({ queryKey: queryKeys.users.all() }),
-    });
+    const createMutation = useCreateUser();
+    const updateMutation = useUpdateUser();
     const photo = useUserPhotoUpload();
 
     const form = useForm<UserFormData>({
@@ -60,7 +48,7 @@ export function useUserForm({
                 first_name: editData.first_name,
                 last_name: editData.last_name,
                 telephone: editData.telephone || "",
-                birthday: editData.birthday || "",
+                birth_date: editData.birth_date || "",
                 department: editData.department ?? undefined,
                 is_active: editData.is_active ?? true,
                 is_staff: editData.is_staff ?? false,
@@ -90,7 +78,7 @@ export function useUserForm({
                     email: data.email,
                     first_name: data.first_name,
                     last_name: data.last_name,
-                    birth_date: data.birthday,
+                    birth_date: data.birth_date,
                     is_active: data.is_active,
                     is_staff: data.is_staff,
                     is_superuser: data.is_superuser,
@@ -110,7 +98,7 @@ export function useUserForm({
                     email: data.email || "",
                     first_name: data.first_name || "",
                     last_name: data.last_name || "",
-                    birth_date: data.birthday,
+                    birth_date: data.birth_date,
                     is_active: data.is_active,
                     is_staff: data.is_staff,
                     is_superuser: data.is_superuser,

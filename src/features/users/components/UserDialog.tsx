@@ -29,7 +29,7 @@ import {
     CircleCheck,
     Key,
 } from "lucide-react";
-import { UserPhotoField } from "./UserPhotoField";
+import { UserPhotoField } from "@/shared/components/UserPhotoField";
 
 interface UserDialogProps {
     onSuccess?: () => void;
@@ -205,7 +205,7 @@ export function UserDialog({ onSuccess, onClose, editData }: UserDialogProps) {
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="birthday"
+                                        name="birth_date"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="text-sm text-foreground">
