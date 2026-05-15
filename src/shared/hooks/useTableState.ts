@@ -9,7 +9,7 @@ export function useTableState<TFilters extends Record<string, unknown>>() {
     }, [filters]);
 
     const handleFilter = (v: Record<string, string>) => {
-        setFilters(v as unknown as TFilters);
+        setFilters(v as TFilters);
     };
 
     const handleClear = () => {

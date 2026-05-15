@@ -1,11 +1,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2, KeyRound, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { usersApi } from "../api";
+import { useChangePassword } from "../hooks";
+import {
+    changePasswordSchema,
+    type ChangePasswordFormData,
+} from "../schemas/changePasswordSchema";
 import {
     Dialog,
     DialogContent,
@@ -15,21 +17,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-const schema = z
-    .object({
-        current_password: z.string().min(1, "Senha atual é obrigatória"),
-        new_password: z
-            .string()
-            .min(6, "A nova senha deve ter pelo menos 6 caracteres"),
-        confirm_password: z.string().min(1, "Confirme a nova senha"),
-    })
-    .refine((d) => d.new_password === d.confirm_password, {
-        message: "As senhas não coincidem",
-        path: ["confirm_password"],
-    });
-
-type FormData = z.infer<typeof schema>;
 
 interface ChangePasswordDialogProps {
     open: boolean;
@@ -49,23 +36,25 @@ export function ChangePasswordDialog({
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm<FormData>({ resolver: zodResolver(schema) });
-
-    const { mutate, isPending } = useMutation({
-        mutationFn: usersApi.changePassword,
-        onSuccess: () => {
-            toast.success("Senha alterada com sucesso!");
-            reset();
-            onOpenChange(false);
-        },
-        onError: () => {
-            toast.error(
-                "Falha ao alterar senha. Verifique a senha atual e tente novamente.",
-            );
-        },
+    } = useForm<ChangePasswordFormData>({
+        resolver: zodResolver(changePasswordSchema),
     });
 
-    const onSubmit = (data: FormData) => mutate(data);
+    const { mutate, isPending } = useChangePassword();
+
+    const onSubmit = (data: ChangePasswordFormData) =>
+        mutate(data, {
+            onSuccess: () => {
+                toast.success("Senha alterada com sucesso!");
+                reset();
+                onOpenChange(false);
+            },
+            onError: () => {
+                toast.error(
+                    "Falha ao alterar senha. Verifique a senha atual e tente novamente.",
+                );
+            },
+        });
 
     const handleOpenChange = (v: boolean) => {
         if (!v) reset();

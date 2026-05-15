@@ -5,10 +5,10 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { AppLayout } from "@/shared/layout/AppLayout";
 import { ErrorBoundary } from "@/shared/components/ErrorBoundary";
 
-const Login = lazy(() => import("@/pages/Login"));
+const Login = lazy(() => import("@/features/auth/pages/Login"));
 const NotFoundPage = lazy(() => import("@/pages/NotFound"));
 const DashboardPage = lazy(() => import("@/pages/Dashboard"));
-const UsersPage = lazy(() => import("@/pages/Users"));
+const UsersPage = lazy(() => import("@/features/users/pages/Users"));
 
 const FullPageLoader = () => (
     <div className="flex min-h-screen items-center justify-center bg-background">

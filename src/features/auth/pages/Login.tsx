@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/hooks";
+import { loginSchema, type LoginFormData } from "../schemas/loginSchema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AlertCircle, Loader2 } from "lucide-react";
@@ -19,24 +21,23 @@ import {
 } from "@/components/ui/field";
 
 export default function Login() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors, isSubmitting },
+    } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError("");
-        setLoading(true);
+    const onSubmit = async (data: LoginFormData) => {
         try {
-            await login(username, password);
+            await login(data.username, data.password);
             navigate("/dashboard", { replace: true });
         } catch {
-            setError("Credenciais inválidas. Tente novamente.");
-        } finally {
-            setLoading(false);
+            setError("root", {
+                message: "Credenciais inválidas. Tente novamente.",
+            });
         }
     };
 
@@ -58,11 +59,14 @@ export default function Login() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        {error && (
+                    <form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="space-y-6"
+                    >
+                        {errors.root && (
                             <div className="flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
                                 <AlertCircle className="h-4 w-4 shrink-0" />
-                                {error}
+                                {errors.root.message}
                             </div>
                         )}
 
@@ -75,12 +79,13 @@ export default function Login() {
                                     id="username"
                                     type="text"
                                     placeholder="username"
-                                    value={username}
-                                    onChange={(e) =>
-                                        setUsername(e.target.value)
-                                    }
-                                    required
+                                    {...register("username")}
                                 />
+                                {errors.username && (
+                                    <p className="text-xs text-destructive">
+                                        {errors.username.message}
+                                    </p>
+                                )}
                             </Field>
                             <Field>
                                 <div className="flex items-center">
@@ -97,17 +102,18 @@ export default function Login() {
                                 <Input
                                     id="password"
                                     type="password"
-                                    value={password}
-                                    onChange={(e) =>
-                                        setPassword(e.target.value)
-                                    }
+                                    {...register("password")}
                                     placeholder="••••••••"
-                                    required
                                 />
+                                {errors.password && (
+                                    <p className="text-xs text-destructive">
+                                        {errors.password.message}
+                                    </p>
+                                )}
                             </Field>
                             <Field>
-                                <Button type="submit" disabled={loading}>
-                                    {loading ? (
+                                <Button type="submit" disabled={isSubmitting}>
+                                    {isSubmitting ? (
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     ) : null}
                                     Login

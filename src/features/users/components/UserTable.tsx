@@ -12,14 +12,10 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { UserTokenDialog } from "./UserTokenDialog";
 import type { User } from "../types";
+import type { PaginatedResponse } from "@/shared/types/api";
 
 interface UserTableProps {
-    data:
-        | {
-              results: User[];
-              count: number;
-          }
-        | undefined;
+    data: PaginatedResponse<User> | undefined;
     isLoading: boolean;
     onEdit: (user: User) => void;
 }

@@ -1,4 +1,3 @@
-import { useMemo, useState } from "react";
 import { KeyRound, Loader2, Copy, RefreshCcw, PlusCircle } from "lucide-react";
 import {
     Dialog,
@@ -20,10 +19,8 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useCreateToken, useRegenerateToken, useToken } from "../hooks";
-import { useAuth } from "@/features/auth/hooks";
+import { useUserTokenDialog } from "../hooks/useUserTokenDialog";
 import type { User } from "../types";
-import { copyClipboard } from "@/lib/copyClipboardHttp";
 
 interface UserTokenDialogProps {
     user: User;
@@ -37,55 +34,22 @@ function formatDate(dateString: string) {
 }
 
 export function UserTokenDialog({ user }: UserTokenDialogProps) {
-    const [open, setOpen] = useState(false);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const { user: authenticatedUser } = useAuth();
-    const tokenQuery = useToken(user.id, open);
-    const createToken = useCreateToken();
-    const regenerateToken = useRegenerateToken();
-
-    const token = tokenQuery.data;
-    const canManageToken = !!authenticatedUser?.is_staff;
-    const isMutating = createToken.isPending || regenerateToken.isPending;
-
-    const dialogTitle = useMemo(() => {
-        const fullName = `${user.first_name} ${user.last_name}`.trim();
-        return fullName || user.username;
-    }, [user.first_name, user.last_name, user.username]);
-
-    const handleCreateToken = async () => {
-        setErrorMessage(null);
-        try {
-            await createToken.mutateAsync({ user_id: user.id });
-        } catch {
-            setErrorMessage("Nao foi possivel criar o token deste usuario.");
-        }
-    };
-
-    const handleRegenerateToken = async () => {
-        setErrorMessage(null);
-        try {
-            await regenerateToken.mutateAsync({ user_id: user.id });
-        } catch {
-            setErrorMessage(
-                "Nao foi possivel regenerar o token deste usuario.",
-            );
-        }
-    };
-
-    const handleCopy = async () => {
-        if (!token?.key) return;
-        setErrorMessage(null);
-        setSuccessMessage(null);
-
-        try {
-            copyClipboard(token.key);
-            setSuccessMessage("Token copiado para a area de transferencia.");
-        } catch {
-            setErrorMessage("Nao foi possivel copiar o token.");
-        }
-    };
+    const {
+        open,
+        setOpen,
+        errorMessage,
+        successMessage,
+        tokenQuery,
+        token,
+        canManageToken,
+        isMutating,
+        isCreating,
+        isRegenerating,
+        dialogTitle,
+        handleCreateToken,
+        handleRegenerateToken,
+        handleCopy,
+    } = useUserTokenDialog(user);
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -162,10 +126,10 @@ export function UserTokenDialog({ user }: UserTokenDialogProps) {
                                         isMutating || tokenQuery.isLoading
                                     }
                                 >
-                                    {createToken.isPending && (
+                                    {isCreating && (
                                         <Loader2 className="h-4 w-4 animate-spin" />
                                     )}
-                                    {!createToken.isPending && (
+                                    {!isCreating && (
                                         <PlusCircle className="h-4 w-4" />
                                     )}
                                     Criar token
@@ -179,10 +143,10 @@ export function UserTokenDialog({ user }: UserTokenDialogProps) {
                                                 tokenQuery.isLoading
                                             }
                                         >
-                                            {regenerateToken.isPending && (
+                                            {isRegenerating && (
                                                 <Loader2 className="h-4 w-4 animate-spin" />
                                             )}
-                                            {!regenerateToken.isPending && (
+                                            {!isRegenerating && (
                                                 <RefreshCcw className="h-4 w-4" />
                                             )}
                                             Gerar novo token

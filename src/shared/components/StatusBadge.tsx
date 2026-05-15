@@ -1,5 +1,3 @@
-import type { ExecutionStatus } from "@/features/executions/types";
-import type { StepStatus } from "@/features/steps/types";
 import { cn } from "@/lib/utils";
 
 const statusConfig: Record<string, { label: string; className: string }> = {
@@ -10,11 +8,7 @@ const statusConfig: Record<string, { label: string; className: string }> = {
     teste: { label: "Teste", className: "bg-accent/15 text-accent" },
 };
 
-export function StatusBadge({
-    status,
-}: {
-    status: ExecutionStatus | StepStatus | string;
-}) {
+export function StatusBadge({ status }: { status: string }) {
     const config = statusConfig[status] || {
         label: status,
         className: "bg-muted text-muted-foreground",

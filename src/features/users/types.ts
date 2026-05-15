@@ -27,7 +27,8 @@ export interface UserCreate {
     is_superuser?: boolean;
 }
 
-export interface UserUpdate extends UserCreate {
+export interface UserUpdate extends Omit<UserCreate, "password"> {
+    password?: string;
     password2?: string;
 }
 
