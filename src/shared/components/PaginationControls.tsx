@@ -1,4 +1,10 @@
-import { Button } from "@/components/ui/button";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+} from "@/components/ui/pagination";
 import {
     ChevronLeft,
     ChevronRight,
@@ -40,69 +46,107 @@ export function PaginationControls({
         pages.push(totalPages);
     }
 
+    const handleClick = (e: React.MouseEvent, targetPage: number) => {
+        e.preventDefault();
+        onPageChange(targetPage);
+    };
+
     return (
         <div className="flex items-center justify-between pt-4">
             <span className="text-xs text-muted-foreground tabular-nums">
                 Exibindo {start}–{end} de {count} registros
             </span>
-            <div className="flex items-center gap-1">
-                <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => onPageChange(1)}
-                    disabled={page === 1}
-                >
-                    <ChevronsLeft className="h-3.5 w-3.5" />
-                </Button>
-                <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => onPageChange(page - 1)}
-                    disabled={page === 1}
-                >
-                    <ChevronLeft className="h-3.5 w-3.5" />
-                </Button>
-                {pages.map((p, i) =>
-                    p === "ellipsis" ? (
-                        <span
-                            key={`e${i}`}
-                            className="px-1 text-xs text-muted-foreground"
-                        >
-                            …
-                        </span>
-                    ) : (
-                        <Button
-                            key={p}
-                            variant={p === page ? "default" : "outline"}
+            <Pagination className="mx-0 w-auto justify-end">
+                <PaginationContent>
+                    <PaginationItem>
+                        <PaginationLink
+                            href="#"
                             size="icon"
-                            className="h-8 w-8 text-xs"
-                            onClick={() => onPageChange(p)}
+                            onClick={(e) => page > 1 && handleClick(e, 1)}
+                            aria-disabled={page === 1}
+                            className={
+                                page === 1
+                                    ? "pointer-events-none opacity-50"
+                                    : ""
+                            }
                         >
-                            {p}
-                        </Button>
-                    ),
-                )}
-                <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => onPageChange(page + 1)}
-                    disabled={page === totalPages}
-                >
-                    <ChevronRight className="h-3.5 w-3.5" />
-                </Button>
-                <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => onPageChange(totalPages)}
-                    disabled={page === totalPages}
-                >
-                    <ChevronsRight className="h-3.5 w-3.5" />
-                </Button>
-            </div>
+                            <ChevronsLeft className="h-3.5 w-3.5" />
+                        </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink
+                            href="#"
+                            size="icon"
+                            onClick={(e) =>
+                                page > 1 && handleClick(e, page - 1)
+                            }
+                            aria-disabled={page === 1}
+                            className={
+                                page === 1
+                                    ? "pointer-events-none opacity-50"
+                                    : ""
+                            }
+                        >
+                            <ChevronLeft className="h-3.5 w-3.5" />
+                        </PaginationLink>
+                    </PaginationItem>
+
+                    {pages.map((p, i) =>
+                        p === "ellipsis" ? (
+                            <PaginationItem key={`e${i}`}>
+                                <PaginationEllipsis />
+                            </PaginationItem>
+                        ) : (
+                            <PaginationItem key={p}>
+                                <PaginationLink
+                                    href="#"
+                                    size="icon"
+                                    isActive={p === page}
+                                    onClick={(e) => handleClick(e, p)}
+                                    className="text-xs"
+                                >
+                                    {p}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ),
+                    )}
+
+                    <PaginationItem>
+                        <PaginationLink
+                            href="#"
+                            size="icon"
+                            onClick={(e) =>
+                                page < totalPages && handleClick(e, page + 1)
+                            }
+                            aria-disabled={page === totalPages}
+                            className={
+                                page === totalPages
+                                    ? "pointer-events-none opacity-50"
+                                    : ""
+                            }
+                        >
+                            <ChevronRight className="h-3.5 w-3.5" />
+                        </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink
+                            href="#"
+                            size="icon"
+                            onClick={(e) =>
+                                page < totalPages && handleClick(e, totalPages)
+                            }
+                            aria-disabled={page === totalPages}
+                            className={
+                                page === totalPages
+                                    ? "pointer-events-none opacity-50"
+                                    : ""
+                            }
+                        >
+                            <ChevronsRight className="h-3.5 w-3.5" />
+                        </PaginationLink>
+                    </PaginationItem>
+                </PaginationContent>
+            </Pagination>
         </div>
     );
 }

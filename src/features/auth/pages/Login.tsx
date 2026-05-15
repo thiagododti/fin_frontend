@@ -14,28 +14,28 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import {
-    Field,
-    FieldDescription,
-    FieldGroup,
-    FieldLabel,
-} from "@/components/ui/field";
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Login() {
     const { login } = useAuth();
     const navigate = useNavigate();
-    const {
-        register,
-        handleSubmit,
-        setError,
-        formState: { errors, isSubmitting },
-    } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
+    const form = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
+
+    const { isSubmitting } = form.formState;
 
     const onSubmit = async (data: LoginFormData) => {
         try {
             await login(data.username, data.password);
             navigate("/dashboard", { replace: true });
         } catch {
-            setError("root", {
+            form.setError("root", {
                 message: "Credenciais inválidas. Tente novamente.",
             });
         }
@@ -59,72 +59,88 @@ export default function Login() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form
-                        onSubmit={handleSubmit(onSubmit)}
-                        className="space-y-6"
-                    >
-                        {errors.root && (
-                            <div className="flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                                <AlertCircle className="h-4 w-4 shrink-0" />
-                                {errors.root.message}
-                            </div>
-                        )}
+                    <Form {...form}>
+                        <form
+                            onSubmit={form.handleSubmit(onSubmit)}
+                            className="space-y-6"
+                        >
+                            {form.formState.errors.root && (
+                                <Alert variant="destructive">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertDescription>
+                                        {form.formState.errors.root.message}
+                                    </AlertDescription>
+                                </Alert>
+                            )}
 
-                        <FieldGroup>
-                            <Field>
-                                <FieldLabel htmlFor="username">
-                                    Usuário
-                                </FieldLabel>
-                                <Input
-                                    id="username"
-                                    type="text"
-                                    placeholder="username"
-                                    {...register("username")}
+                            <div className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="username"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Usuário</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="text"
+                                                    placeholder="username"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
                                 />
-                                {errors.username && (
-                                    <p className="text-xs text-destructive">
-                                        {errors.username.message}
-                                    </p>
-                                )}
-                            </Field>
-                            <Field>
-                                <div className="flex items-center">
-                                    <FieldLabel htmlFor="password">
-                                        Senha
-                                    </FieldLabel>
-                                    <a
-                                        href="#"
-                                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                                    >
-                                        Esqueceu sua senha?
-                                    </a>
-                                </div>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    {...register("password")}
-                                    placeholder="••••••••"
+                                <FormField
+                                    control={form.control}
+                                    name="password"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <div className="flex items-center">
+                                                <FormLabel>Senha</FormLabel>
+                                                <a
+                                                    href="#"
+                                                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                                                >
+                                                    Esqueceu sua senha?
+                                                </a>
+                                            </div>
+                                            <FormControl>
+                                                <Input
+                                                    type="password"
+                                                    placeholder="••••••••"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
                                 />
-                                {errors.password && (
-                                    <p className="text-xs text-destructive">
-                                        {errors.password.message}
-                                    </p>
-                                )}
-                            </Field>
-                            <Field>
-                                <Button type="submit" disabled={isSubmitting}>
-                                    {isSubmitting ? (
+                            </div>
+
+                            <div className="space-y-2">
+                                <Button
+                                    type="submit"
+                                    className="w-full"
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting && (
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    ) : null}
+                                    )}
                                     Login
                                 </Button>
-                                <FieldDescription className="text-center">
+                                <p className="text-center text-sm text-muted-foreground">
                                     Não possui uma conta?{" "}
-                                    <a href="#">Cadastre-se</a>
-                                </FieldDescription>
-                            </Field>
-                        </FieldGroup>
-                    </form>
+                                    <a
+                                        href="#"
+                                        className="underline-offset-4 hover:underline"
+                                    >
+                                        Cadastre-se
+                                    </a>
+                                </p>
+                            </div>
+                        </form>
+                    </Form>
                 </CardContent>
             </Card>
         </div>

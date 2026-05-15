@@ -8,6 +8,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { UserTokenDialog } from "./UserTokenDialog";
@@ -95,16 +96,22 @@ export function UserTable({ data, isLoading, onEdit }: UserTableProps) {
                             <TableCell>
                                 <div className="flex items-center gap-1.5">
                                     {user.is_superuser && (
-                                        <span className="inline-flex items-center gap-1 rounded-md bg-warning/15 px-2 py-0.5 text-xs font-medium text-warning">
+                                        <Badge
+                                            variant="outline"
+                                            className="gap-1 bg-warning/15 text-warning border-transparent hover:bg-warning/20"
+                                        >
                                             <Crown className="h-3 w-3" />
                                             Super
-                                        </span>
+                                        </Badge>
                                     )}
                                     {user.is_staff && (
-                                        <span className="inline-flex items-center gap-1 rounded-md bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">
+                                        <Badge
+                                            variant="outline"
+                                            className="gap-1 bg-primary/15 text-primary border-transparent hover:bg-primary/20"
+                                        >
                                             <ShieldCheck className="h-3 w-3" />
                                             Staff
-                                        </span>
+                                        </Badge>
                                     )}
                                     {!user.is_superuser && !user.is_staff && (
                                         <span className="text-xs text-muted-foreground">
@@ -116,16 +123,17 @@ export function UserTable({ data, isLoading, onEdit }: UserTableProps) {
 
                             {/* Status */}
                             <TableCell>
-                                <span
+                                <Badge
+                                    variant="outline"
                                     className={cn(
-                                        "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium",
+                                        "border-transparent",
                                         user.is_active
-                                            ? "bg-success/15 text-success"
-                                            : "bg-muted text-muted-foreground",
+                                            ? "bg-success/15 text-success hover:bg-success/20"
+                                            : "bg-muted text-muted-foreground hover:bg-muted/80",
                                     )}
                                 >
                                     {user.is_active ? "Ativo" : "Inativo"}
-                                </span>
+                                </Badge>
                             </TableCell>
 
                             {/* Ações */}

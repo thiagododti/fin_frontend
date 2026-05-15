@@ -7,8 +7,15 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
 import { useProfileForm } from "../hooks/useProfileForm";
 import { UserPhotoField } from "./UserPhotoField";
 
@@ -29,11 +36,6 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
         resetPhoto,
     } = useProfileForm({ open, onClose: () => onOpenChange(false) });
 
-    const {
-        register,
-        formState: { errors },
-    } = form;
-
     const handleOpenChange = (v: boolean) => {
         if (!isPending) onOpenChange(v);
     };
@@ -48,94 +50,127 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
                     </DialogTitle>
                 </DialogHeader>
 
-                <form onSubmit={onSubmit} className="space-y-6">
-                    {/* ── Foto + Nome ──────────────────────────────────── */}
-                    <div className="flex items-start gap-5">
-                        <UserPhotoField
-                            photoPreview={photoPreview}
-                            fileInputRef={fileInputRef}
-                            onPhotoChange={(file) => {
-                                setPhotoFile(file);
-                                setPhotoPreview(URL.createObjectURL(file));
-                            }}
-                            onPhotoRemove={resetPhoto}
-                        />
+                <Form {...form}>
+                    <form onSubmit={onSubmit} className="space-y-6">
+                        {/* ── Foto + Nome ──────────────────────────────────── */}
+                        <div className="flex items-start gap-5">
+                            <UserPhotoField
+                                photoPreview={photoPreview}
+                                fileInputRef={fileInputRef}
+                                onPhotoChange={(file: File) => {
+                                    setPhotoFile(file);
+                                    setPhotoPreview(URL.createObjectURL(file));
+                                }}
+                                onPhotoRemove={resetPhoto}
+                            />
 
-                        <div className="flex-1 space-y-3">
+                            <div className="flex-1 space-y-3">
+                                <div className="grid grid-cols-2 gap-3">
+                                    <FormField
+                                        control={form.control}
+                                        name="first_name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="text-sm text-foreground">
+                                                    Nome
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="Nome"
+                                                        className="bg-secondary border-border"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="last_name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="text-sm text-foreground">
+                                                    Sobrenome
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="Sobrenome"
+                                                        className="bg-secondary border-border"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-sm text-foreground">
+                                                Email
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="email"
+                                                    placeholder="email@exemplo.com"
+                                                    disabled
+                                                    className="bg-secondary border-border"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        </div>
+
+                        <Separator className="bg-border" />
+
+                        {/* ── Contato ──────────────────────────────────────── */}
+                        <div className="space-y-3">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                Contato
+                            </p>
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="space-y-1.5">
-                                    <Label className="text-sm text-foreground">
-                                        Nome
-                                    </Label>
-                                    <Input
-                                        {...register("first_name")}
-                                        placeholder="Nome"
-                                        className="bg-secondary border-border"
-                                    />
-                                </div>
-                                <div className="space-y-1.5">
-                                    <Label className="text-sm text-foreground">
-                                        Sobrenome
-                                    </Label>
-                                    <Input
-                                        {...register("last_name")}
-                                        placeholder="Sobrenome"
-                                        className="bg-secondary border-border"
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-1.5">
-                                <Label className="text-sm text-foreground">
-                                    Email
-                                </Label>
-                                <Input
-                                    type="email"
-                                    {...register("email")}
-                                    placeholder="email@exemplo.com"
-                                    disabled
-                                    className="bg-secondary border-border"
-                                />
-                                {errors.email && (
-                                    <p className="text-xs text-destructive">
-                                        {errors.email.message}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    <Separator className="bg-border" />
-
-                    {/* ── Contato ──────────────────────────────────────── */}
-                    <div className="space-y-3">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                            Contato
-                        </p>
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="space-y-1.5">
-                                <Label className="text-sm text-foreground">
-                                    Nascimento
-                                </Label>
-                                <Input
-                                    type="date"
-                                    {...register("birth_date")}
-                                    className="bg-secondary border-border"
+                                <FormField
+                                    control={form.control}
+                                    name="birth_date"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-sm text-foreground">
+                                                Nascimento
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="date"
+                                                    className="bg-secondary border-border"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
                                 />
                             </div>
                         </div>
-                    </div>
 
-                    <Button
-                        type="submit"
-                        className="w-full"
-                        disabled={isPending}
-                    >
-                        {isPending && (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        )}
-                        Salvar Alterações
-                    </Button>
-                </form>
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={isPending}
+                        >
+                            {isPending && (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            )}
+                            Salvar Alterações
+                        </Button>
+                    </form>
+                </Form>
             </DialogContent>
         </Dialog>
     );

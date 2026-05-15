@@ -16,7 +16,15 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { Separator } from "@/components/ui/separator";
 
 interface ChangePasswordDialogProps {
     open: boolean;
@@ -31,12 +39,7 @@ export function ChangePasswordDialog({
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm<ChangePasswordFormData>({
+    const form = useForm<ChangePasswordFormData>({
         resolver: zodResolver(changePasswordSchema),
     });
 
@@ -46,7 +49,7 @@ export function ChangePasswordDialog({
         mutate(data, {
             onSuccess: () => {
                 toast.success("Senha alterada com sucesso!");
-                reset();
+                form.reset();
                 onOpenChange(false);
             },
             onError: () => {
@@ -57,7 +60,7 @@ export function ChangePasswordDialog({
         });
 
     const handleOpenChange = (v: boolean) => {
-        if (!v) reset();
+        if (!v) form.reset();
         onOpenChange(v);
     };
 
@@ -71,119 +74,148 @@ export function ChangePasswordDialog({
                     </DialogTitle>
                 </DialogHeader>
 
-                <form
-                    onSubmit={handleSubmit(onSubmit)}
-                    className="space-y-4 pt-1"
-                >
-                    {/* Senha Atual */}
-                    <div className="space-y-1.5">
-                        <Label className="text-foreground text-sm">
-                            Senha atual
-                        </Label>
-                        <div className="relative">
-                            <Input
-                                type={showCurrent ? "text" : "password"}
-                                placeholder="••••••••"
-                                className="bg-secondary border-border pr-10"
-                                {...register("current_password")}
-                            />
-                            <button
-                                type="button"
-                                tabIndex={-1}
-                                onClick={() => setShowCurrent((v) => !v)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                            >
-                                {showCurrent ? (
-                                    <EyeOff className="h-4 w-4" />
-                                ) : (
-                                    <Eye className="h-4 w-4" />
-                                )}
-                            </button>
-                        </div>
-                        {errors.current_password && (
-                            <p className="text-xs text-destructive">
-                                {errors.current_password.message}
-                            </p>
-                        )}
-                    </div>
-
-                    <div className="my-1 border-t border-border" />
-
-                    {/* Nova senha */}
-                    <div className="space-y-1.5">
-                        <Label className="text-foreground text-sm">
-                            Nova senha
-                        </Label>
-                        <div className="relative">
-                            <Input
-                                type={showNew ? "text" : "password"}
-                                placeholder="••••••••"
-                                className="bg-secondary border-border pr-10"
-                                {...register("new_password")}
-                            />
-                            <button
-                                type="button"
-                                tabIndex={-1}
-                                onClick={() => setShowNew((v) => !v)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                            >
-                                {showNew ? (
-                                    <EyeOff className="h-4 w-4" />
-                                ) : (
-                                    <Eye className="h-4 w-4" />
-                                )}
-                            </button>
-                        </div>
-                        {errors.new_password && (
-                            <p className="text-xs text-destructive">
-                                {errors.new_password.message}
-                            </p>
-                        )}
-                    </div>
-
-                    {/* Confirmar nova senha */}
-                    <div className="space-y-1.5">
-                        <Label className="text-foreground text-sm">
-                            Confirmar nova senha
-                        </Label>
-                        <div className="relative">
-                            <Input
-                                type={showConfirm ? "text" : "password"}
-                                placeholder="••••••••"
-                                className="bg-secondary border-border pr-10"
-                                {...register("confirm_password")}
-                            />
-                            <button
-                                type="button"
-                                tabIndex={-1}
-                                onClick={() => setShowConfirm((v) => !v)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                            >
-                                {showConfirm ? (
-                                    <EyeOff className="h-4 w-4" />
-                                ) : (
-                                    <Eye className="h-4 w-4" />
-                                )}
-                            </button>
-                        </div>
-                        {errors.confirm_password && (
-                            <p className="text-xs text-destructive">
-                                {errors.confirm_password.message}
-                            </p>
-                        )}
-                    </div>
-
-                    <Button
-                        type="submit"
-                        className="w-full mt-2"
-                        disabled={isPending}
+                <Form {...form}>
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="space-y-4 pt-1"
                     >
-                        {isPending && (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        )}
-                        Alterar Senha
-                    </Button>
-                </form>
+                        <FormField
+                            control={form.control}
+                            name="current_password"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-foreground text-sm">
+                                        Senha atual
+                                    </FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Input
+                                                type={
+                                                    showCurrent
+                                                        ? "text"
+                                                        : "password"
+                                                }
+                                                placeholder="••••••••"
+                                                className="bg-secondary border-border pr-10"
+                                                {...field}
+                                            />
+                                            <button
+                                                type="button"
+                                                tabIndex={-1}
+                                                onClick={() =>
+                                                    setShowCurrent((v) => !v)
+                                                }
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                            >
+                                                {showCurrent ? (
+                                                    <EyeOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                            </button>
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <Separator className="bg-border" />
+
+                        <FormField
+                            control={form.control}
+                            name="new_password"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-foreground text-sm">
+                                        Nova senha
+                                    </FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Input
+                                                type={
+                                                    showNew
+                                                        ? "text"
+                                                        : "password"
+                                                }
+                                                placeholder="••••••••"
+                                                className="bg-secondary border-border pr-10"
+                                                {...field}
+                                            />
+                                            <button
+                                                type="button"
+                                                tabIndex={-1}
+                                                onClick={() =>
+                                                    setShowNew((v) => !v)
+                                                }
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                            >
+                                                {showNew ? (
+                                                    <EyeOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                            </button>
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="confirm_password"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-foreground text-sm">
+                                        Confirmar nova senha
+                                    </FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Input
+                                                type={
+                                                    showConfirm
+                                                        ? "text"
+                                                        : "password"
+                                                }
+                                                placeholder="••••••••"
+                                                className="bg-secondary border-border pr-10"
+                                                {...field}
+                                            />
+                                            <button
+                                                type="button"
+                                                tabIndex={-1}
+                                                onClick={() =>
+                                                    setShowConfirm((v) => !v)
+                                                }
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                            >
+                                                {showConfirm ? (
+                                                    <EyeOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                            </button>
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <Button
+                            type="submit"
+                            className="w-full mt-2"
+                            disabled={isPending}
+                        >
+                            {isPending && (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            )}
+                            Alterar Senha
+                        </Button>
+                    </form>
+                </Form>
             </DialogContent>
         </Dialog>
     );

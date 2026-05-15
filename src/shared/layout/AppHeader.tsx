@@ -70,7 +70,10 @@ export function AppHeader() {
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <button className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-secondary/60 transition-colors outline-none">
+                        <Button
+                            variant="ghost"
+                            className="flex h-auto items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-secondary/60"
+                        >
                             <Avatar className="h-8 w-8">
                                 <AvatarImage src={user?.photo ?? undefined} />
                                 <AvatarFallback className="bg-secondary text-xs font-medium text-foreground">
@@ -96,7 +99,7 @@ export function AppHeader() {
                                 )}
                             </div>
                             <ChevronDown className="h-3.5 w-3.5 text-muted-foreground ml-0.5" />
-                        </button>
+                        </Button>
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent

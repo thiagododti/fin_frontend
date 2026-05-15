@@ -27,13 +27,15 @@ export function UserPhotoField({
                     </AvatarFallback>
                 </Avatar>
                 {photoPreview && (
-                    <button
+                    <Button
                         type="button"
+                        variant="destructive"
+                        size="icon"
                         onClick={onPhotoRemove}
-                        className="absolute -top-1 -right-1 rounded-full bg-destructive p-0.5 text-destructive-foreground hover:bg-destructive/80"
+                        className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0"
                     >
                         <X className="h-3 w-3" />
-                    </button>
+                    </Button>
                 )}
             </div>
             <Input
