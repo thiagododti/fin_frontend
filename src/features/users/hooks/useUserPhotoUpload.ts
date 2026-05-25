@@ -1,15 +1,14 @@
-import { useState, useRef } from "react";
+import { useFileUpload } from "@/shared/hooks/useFileUpload";
 
 export function useUserPhotoUpload() {
-    const [photoFile, setPhotoFile] = useState<File | undefined>(undefined);
-    const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const resetPhoto = () => {
-        setPhotoFile(undefined);
-        setPhotoPreview(null);
-        if (fileInputRef.current) fileInputRef.current.value = "";
-    };
+    const {
+        file: photoFile,
+        setFile: setPhotoFile,
+        preview: photoPreview,
+        setPreview: setPhotoPreview,
+        fileInputRef,
+        reset: resetPhoto,
+    } = useFileUpload();
 
     return {
         photoFile,
