@@ -1,12 +1,4 @@
-export interface ProfileUser {
-    id: number;
-    username: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    birth_date: string | null;
-    photo: string | null;
-}
+export type { ProfileUser } from "./schemas/profileUserSchema";
 
 export interface ProfileUpdate {
     first_name?: string;

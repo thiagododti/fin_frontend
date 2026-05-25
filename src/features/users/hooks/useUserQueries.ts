@@ -8,15 +8,14 @@ import type { UserFilters, UserCreate, UserUpdate } from "../types";
 export function useUsers(filters?: UserFilters, page = 1) {
     return useQuery({
         queryKey: userKeys.list(filters, page),
-        queryFn: () =>
-            usersApi.list({ ...filters, page }).then((res) => res.data),
+        queryFn: () => usersApi.list({ ...filters, page }),
     });
 }
 
 export function useUser(id: number) {
     return useQuery({
         queryKey: userKeys.detail(id),
-        queryFn: () => usersApi.getById(id).then((res) => res.data),
+        queryFn: () => usersApi.getById(id),
         enabled: !!id,
     });
 }

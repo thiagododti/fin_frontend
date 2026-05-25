@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "@/lib/apiError";
 import { useCreateUser, useUpdateUser } from "../hooks";
 import { useUserPhotoUpload } from "./useUserPhotoUpload";
 import type { UserUpdate } from "../types";
@@ -24,7 +25,7 @@ interface UseUserFormProps {
 }
 
 export function useUserForm({
-    open,
+    open: _open,
     editData,
     onSuccess,
     onClose,
@@ -111,9 +112,11 @@ export function useUserForm({
             photo.resetPhoto();
             onSuccess?.();
         } catch (error) {
-            console.error("Erro ao salvar usuário:", error);
             toast.error(
-                "Erro ao salvar usuário. Verifique os dados e tente novamente.",
+                getApiErrorMessage(
+                    error,
+                    "Erro ao salvar usuário. Verifique os dados e tente novamente.",
+                ),
             );
         }
     };

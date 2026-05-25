@@ -1,23 +1,16 @@
-import type { User } from "@/features/users/types";
+import type { ProfileUser } from "@/features/profile/types";
+export type { TokenResponse, RefreshResponse } from "./schemas/tokenSchema";
 
 export interface LoginCredentials {
     username: string;
     password: string;
 }
 
-export interface JwtTokenPair {
-    access: string;
-    refresh: string;
-}
-
-export type TokenResponse = JwtTokenPair;
-export type RefreshResponse = JwtTokenPair;
-
 export interface AuthContextType {
-    user: User | null;
+    user: ProfileUser | null;
     isAuthenticated: boolean;
     isLoading: boolean;
     login: (username: string, password: string) => Promise<void>;
     logout: () => void;
-    updateUser: (user: User) => void;
+    updateUser: (user: ProfileUser) => void;
 }

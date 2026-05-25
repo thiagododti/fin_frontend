@@ -1,6 +1,9 @@
 import api from "@/lib/axios";
-import type { User } from "@/features/users/types";
-import type { ProfileUpdate, ProfileUser, ChangePassword } from "./types";
+import type { ProfileUpdate, ChangePassword } from "./types";
+import {
+    profileUserSchema,
+    type ProfileUser,
+} from "./schemas/profileUserSchema";
 
 function buildProfileFormData(data: ProfileUpdate): FormData {
     const formData = new FormData();
@@ -13,12 +16,21 @@ function buildProfileFormData(data: ProfileUpdate): FormData {
 }
 
 export const profileApi = {
-    me: () => api.get<User>("/api/users/me/"),
+    me: async (): Promise<ProfileUser> => {
+        const res = await api.get("/api/users/me/");
+        return profileUserSchema.parse(res.data);
+    },
 
-    updateMe: (data: ProfileUpdate) =>
-        api.patch<ProfileUser>("/api/users/me/", buildProfileFormData(data), {
-            headers: { "Content-Type": "multipart/form-data" },
-        }),
+    updateMe: async (data: ProfileUpdate): Promise<ProfileUser> => {
+        const res = await api.patch(
+            "/api/users/me/",
+            buildProfileFormData(data),
+            {
+                headers: { "Content-Type": "multipart/form-data" },
+            },
+        );
+        return profileUserSchema.parse(res.data);
+    },
 
     changePassword: (data: ChangePassword) =>
         api.post("/api/users/change-password/", data),

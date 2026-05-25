@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "@/lib/apiError";
 import { useChangePassword } from "./useProfileQueries";
 import {
     changePasswordSchema,
@@ -32,9 +33,12 @@ export function useChangePasswordForm({ onClose }: UseChangePasswordFormProps) {
                 form.reset();
                 onClose();
             },
-            onError: () => {
+            onError: (error) => {
                 toast.error(
-                    "Falha ao alterar senha. Verifique a senha atual e tente novamente.",
+                    getApiErrorMessage(
+                        error,
+                        "Falha ao alterar senha. Verifique a senha atual e tente novamente.",
+                    ),
                 );
             },
         }),

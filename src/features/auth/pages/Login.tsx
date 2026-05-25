@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/hooks";
+import { getApiErrorMessage } from "@/lib/apiError";
 import { loginSchema, type LoginFormData } from "../schemas/loginSchema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,9 +35,12 @@ export default function Login() {
         try {
             await login(data.username, data.password);
             navigate("/dashboard", { replace: true });
-        } catch {
+        } catch (error) {
             form.setError("root", {
-                message: "Credenciais inválidas. Tente novamente.",
+                message: getApiErrorMessage(
+                    error,
+                    "Falha ao realizar login. Verifique as credenciais e tente novamente.",
+                ),
             });
         }
     };

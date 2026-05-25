@@ -129,11 +129,7 @@ export function AppSidebar() {
                                                 {displayName}
                                             </span>
                                             <span className="truncate text-xs text-muted-foreground">
-                                                {user?.is_superuser
-                                                    ? "Superusuário"
-                                                    : user?.is_staff
-                                                      ? "Staff"
-                                                      : user?.email}
+                                                {user?.email || user?.username}
                                             </span>
                                         </div>
                                         <ChevronsUpDown className="ml-auto size-4" />

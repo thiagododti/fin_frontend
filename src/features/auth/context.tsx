@@ -5,21 +5,22 @@ import React, {
     useCallback,
     useRef,
 } from "react";
-import type { User } from "@/features/users/types";
 import type { AuthContextType } from "./types";
 import { authApi } from "./authService";
 import { profileApi } from "@/features/profile/api";
+import type { ProfileUser } from "@/features/profile/types";
 import { isTokenExpired, getTokenExpiry } from "@/lib/jwt";
 import { tokenStore } from "@/lib/tokenStore";
+
+const MAX_TIMEOUT_MS = 24 * 60 * 60 * 1000; // 24h — evita overflow em setTimeout
 
 export const AuthContext = createContext<AuthContextType | undefined>(
     undefined,
 );
 
-async function fetchCurrentUser(): Promise<User | null> {
+async function fetchCurrentUser(): Promise<ProfileUser | null> {
     try {
-        const { data } = await profileApi.me();
-        return data;
+        return await profileApi.me();
     } catch {
         return null;
     }
@@ -28,7 +29,7 @@ async function fetchCurrentUser(): Promise<User | null> {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<ProfileUser | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const logoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -41,11 +42,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         tokenStore.clear();
         setUser(null);
         if (refreshToken) {
-            authApi.blacklist(refreshToken).catch(() => {});
+            authApi.blacklist(refreshToken).catch(() => undefined);
         }
     }, []);
-
-    const MAX_TIMEOUT_MS = 24 * 60 * 60 * 1000; // 24h — evita overflow em setTimeout
 
     const scheduleLogout = useCallback(
         (refreshToken: string) => {
@@ -76,9 +75,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 
     const login = async (username: string, password: string) => {
-        const { data } = await authApi.login({ username, password });
-        tokenStore.setAccessToken(data.access);
-        tokenStore.setRefreshToken(data.refresh);
+        const tokens = await authApi.login({ username, password });
+        tokenStore.setAccessToken(tokens.access);
+        tokenStore.setRefreshToken(tokens.refresh);
 
         const fullUser = await fetchCurrentUser();
         if (!fullUser) {
@@ -87,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         setUser(fullUser);
-        scheduleLogout(data.refresh);
+        scheduleLogout(tokens.refresh);
     };
 
     // Escuta eventos emitidos pelo interceptor do axios
@@ -131,11 +130,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 !isTokenExpired(storedRefreshToken)
             ) {
                 try {
-                    const { data } = await authApi.refresh(storedRefreshToken);
-                    tokenStore.setAccessToken(data.access);
-                    tokenStore.setRefreshToken(data.refresh);
-                    validToken = data.access;
-                    latestRefreshToken = data.refresh;
+                    const tokens = await authApi.refresh(storedRefreshToken);
+                    tokenStore.setAccessToken(tokens.access);
+                    tokenStore.setRefreshToken(tokens.refresh);
+                    validToken = tokens.access;
+                    latestRefreshToken = tokens.refresh;
                 } catch {
                     tokenStore.clear();
                     latestRefreshToken = null;
@@ -167,7 +166,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         };
     }, [scheduleLogout]);
 
-    const updateUser = useCallback((updated: User) => {
+    const updateUser = useCallback((updated: ProfileUser) => {
         setUser(updated);
     }, []);
 

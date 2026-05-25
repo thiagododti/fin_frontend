@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "@/lib/apiError";
 import { useAuth } from "@/features/auth/hooks";
 import { useUpdateMe } from "./useProfileQueries";
 import {
@@ -62,8 +63,13 @@ export function useProfileForm({ open, onClose }: UseProfileFormProps) {
                 toast.success("Perfil atualizado com sucesso!");
                 onClose();
             },
-            onError: () => {
-                toast.error("Erro ao atualizar perfil. Tente novamente.");
+            onError: (error) => {
+                toast.error(
+                    getApiErrorMessage(
+                        error,
+                        "Erro ao atualizar perfil. Tente novamente.",
+                    ),
+                );
             },
         });
     });

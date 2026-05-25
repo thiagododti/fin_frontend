@@ -1,12 +1,20 @@
 import api from "@/lib/axios";
 import type { LoginCredentials, TokenResponse, RefreshResponse } from "./types";
+import {
+    tokenResponseSchema,
+    refreshResponseSchema,
+} from "./schemas/tokenSchema";
 
 export const authApi = {
-    login: (credentials: LoginCredentials) =>
-        api.post<TokenResponse>("/api/token/", credentials),
+    login: async (credentials: LoginCredentials): Promise<TokenResponse> => {
+        const res = await api.post("/api/token/", credentials);
+        return tokenResponseSchema.parse(res.data);
+    },
 
-    refresh: (refresh: string) =>
-        api.post<RefreshResponse>("/api/token/refresh/", { refresh }),
+    refresh: async (refresh: string): Promise<RefreshResponse> => {
+        const res = await api.post("/api/token/refresh/", { refresh });
+        return refreshResponseSchema.parse(res.data);
+    },
 
     verify: (token: string) => api.post("/api/token/verify/", { token }),
 

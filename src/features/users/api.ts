@@ -1,6 +1,7 @@
 import api from "@/lib/axios";
-import type { User, UserCreate, UserUpdate, UserFilters } from "./types";
-import type { PaginatedResponse } from "@/shared/types/api";
+import type { UserCreate, UserUpdate, UserFilters } from "./types";
+import { paginatedResponseSchema } from "@/shared/types/api";
+import { userSchema, type User } from "./schemas/userSchema";
 
 function buildUserFormData(data: UserCreate | UserUpdate): FormData {
     const formData = new FormData();
@@ -13,18 +14,31 @@ function buildUserFormData(data: UserCreate | UserUpdate): FormData {
 }
 
 export const usersApi = {
-    list: (filters?: UserFilters & { page?: number }) =>
-        api.get<PaginatedResponse<User>>("/api/users/", { params: filters }),
+    list: async (filters?: UserFilters & { page?: number }) => {
+        const res = await api.get("/api/users/", { params: filters });
+        return paginatedResponseSchema(userSchema).parse(res.data);
+    },
 
-    getById: (id: number) => api.get<User>(`/api/users/${id}/`),
+    getById: async (id: number) => {
+        const res = await api.get(`/api/users/${id}/`);
+        return userSchema.parse(res.data);
+    },
 
-    create: (data: UserCreate) =>
-        api.post<User>("/api/users/", buildUserFormData(data), {
+    create: async (data: UserCreate): Promise<User> => {
+        const res = await api.post("/api/users/", buildUserFormData(data), {
             headers: { "Content-Type": "multipart/form-data" },
-        }),
+        });
+        return userSchema.parse(res.data);
+    },
 
-    patch: (id: number, data: UserUpdate) =>
-        api.patch<User>(`/api/users/${id}/`, buildUserFormData(data), {
-            headers: { "Content-Type": "multipart/form-data" },
-        }),
+    patch: async (id: number, data: UserUpdate): Promise<User> => {
+        const res = await api.patch(
+            `/api/users/${id}/`,
+            buildUserFormData(data),
+            {
+                headers: { "Content-Type": "multipart/form-data" },
+            },
+        );
+        return userSchema.parse(res.data);
+    },
 };

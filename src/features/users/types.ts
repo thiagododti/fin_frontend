@@ -1,17 +1,4 @@
-export interface User {
-    id: number;
-    last_login: string | null;
-    is_superuser: boolean;
-    username: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    is_staff: boolean;
-    is_active: boolean;
-    date_joined: string;
-    birth_date: string | null;
-    photo: string | null;
-}
+export type { User } from "./schemas/userSchema";
 
 export interface UserCreate {
     username: string;

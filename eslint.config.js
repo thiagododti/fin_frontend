@@ -29,9 +29,9 @@ export default tseslint.config(
             ],
             "@typescript-eslint/no-unused-vars": "error",
             "@typescript-eslint/no-explicit-any": "error",
-            "@typescript-eslint/explicit-function-return-types": ["warning"],
+            "@typescript-eslint/explicit-function-return-type": ["warn"],
             "@typescript-eslint/explicit-member-accessibility": [
-                "warning",
+                "warn",
                 { accessibility: "explicit" },
             ],
         },

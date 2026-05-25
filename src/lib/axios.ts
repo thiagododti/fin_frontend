@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { refreshResponseSchema } from "@/features/auth/schemas/tokenSchema";
 import { isTokenExpired } from "./jwt";
 import { tokenStore } from "./tokenStore";
 
@@ -81,18 +82,18 @@ api.interceptors.response.use(
             }
 
             try {
-                const { data } = await axios.post(
+                const response = await axios.post(
                     `${import.meta.env.VITE_API_BASE_URL}/api/token/refresh/`,
                     { refresh: refreshToken },
                 );
+                const data = refreshResponseSchema.parse(response.data);
                 tokenStore.setAccessToken(data.access);
-                const newRefresh = data.refresh ?? refreshToken;
-                tokenStore.setRefreshToken(newRefresh);
+                tokenStore.setRefreshToken(data.refresh);
                 processQueue(null, data.access);
                 originalRequest.headers.Authorization = `Bearer ${data.access}`;
                 window.dispatchEvent(
                     new CustomEvent("auth:token-refreshed", {
-                        detail: { access: data.access, refresh: newRefresh },
+                        detail: { access: data.access, refresh: data.refresh },
                     }),
                 );
                 return api(originalRequest);

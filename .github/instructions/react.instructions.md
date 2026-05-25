@@ -16,6 +16,11 @@ applyTo: "src/**/*.{ts,tsx}"
 - Centralizar todas as chamadas HTTP em arquivos de `service` dentro da feature ou em `src/shared/services/`.
 - Utilizar uma instância configurada do cliente HTTP (ex: `axios` com `baseURL` e interceptors) — nunca `fetch` diretamente nos componentes.
 - Não expor lógica de chamada HTTP diretamente nos componentes ou hooks.
+- **Toda resposta da API deve ser validada com Zod** usando `.parse()` no arquivo de serviço. Nunca confiar em tipagem estática do Axios (generics como `api.get<Tipo>()` não validam em runtime).
+- Os schemas Zod de resposta ficam em arquivos separados dentro da feature (ex: `userSchema.ts`) e os tipos são inferidos com `z.infer<typeof schema>`.
+- Para respostas paginadas, usar a função `paginatedResponseSchema` de `@/shared/types/api`.
+- Os arquivos de serviço (api.ts / usersService.ts) retornam os dados já parseados — os hooks não devem usar `.then(res => res.data)`.
+- Erros de API devem ser tratados com `getApiErrorMessage` de `@/lib/apiError`, nunca com mensagens fixas que ignoram o retorno do servidor.
 
 ## Data fetching — obrigatório
 
@@ -47,6 +52,7 @@ Exemplo de quando usar cada um:
 - Schemas Zod devem ficar em arquivos separados (ex: `user.schema.ts`) dentro da feature.
 - Tipos de formulário devem ser inferidos do schema: `z.infer<typeof schema>`.
 - Nunca criar validação manual inline nos componentes.
+- Schemas de **formulário** (entrada do usuário) e schemas de **resposta da API** (contrato do backend) devem ser arquivos separados.
 
 ## Estrutura do projeto — obrigatório
 
@@ -113,6 +119,8 @@ src/
 - Erros de API devem ser tratados nos hooks de data fetching — não nos componentes.
 - Mensagens de erro exibidas ao usuário devem ser legíveis e nunca expor detalhes técnicos.
 - Usar um sistema de notificação centralizado (ex: `toast`) para feedback de erros e sucesso.
+- Usar `getApiErrorMessage(error, "mensagem fallback")` de `@/lib/apiError` para extrair a mensagem de erro da resposta da API.
+- Nunca passar string literal fixa diretamente para `toast.error()` quando há um erro de requisição — sempre usar `getApiErrorMessage`.
 
 ## Preferências arquiteturais
 
