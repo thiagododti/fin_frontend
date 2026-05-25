@@ -32,6 +32,7 @@ export const profileApi = {
         return profileUserSchema.parse(res.data);
     },
 
+    // Resposta intencionalmente ignorada (fire-and-forget) — sem parse Zod
     changePassword: (data: ChangePassword) =>
         api.post("/api/users/change-password/", data),
 };

@@ -1,9 +1,4 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/features/auth/hooks";
-import { getApiErrorMessage } from "@/lib/apiError";
-import { loginSchema, type LoginFormData } from "../schemas/loginSchema";
+import { useLoginForm } from "../hooks/useLoginForm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AlertCircle, Loader2 } from "lucide-react";
@@ -25,25 +20,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Login() {
-    const { login } = useAuth();
-    const navigate = useNavigate();
-    const form = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
-
-    const { isSubmitting } = form.formState;
-
-    const onSubmit = async (data: LoginFormData) => {
-        try {
-            await login(data.username, data.password);
-            navigate("/dashboard", { replace: true });
-        } catch (error) {
-            form.setError("root", {
-                message: getApiErrorMessage(
-                    error,
-                    "Falha ao realizar login. Verifique as credenciais e tente novamente.",
-                ),
-            });
-        }
-    };
+    const { form, onSubmit, isSubmitting } = useLoginForm();
 
     return (
         <div className="flex min-h-screen items-center justify-center">
@@ -64,10 +41,7 @@ export default function Login() {
                 </CardHeader>
                 <CardContent>
                     <Form {...form}>
-                        <form
-                            onSubmit={form.handleSubmit(onSubmit)}
-                            className="space-y-6"
-                        >
+                        <form onSubmit={onSubmit} className="space-y-6">
                             {form.formState.errors.root && (
                                 <Alert variant="destructive">
                                     <AlertCircle className="h-4 w-4" />

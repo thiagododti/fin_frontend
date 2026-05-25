@@ -7,8 +7,8 @@ export interface ProfileUpdate {
     photo?: File;
 }
 
-export type ChangePassword = {
+export interface ChangePassword {
     current_password: string;
     new_password: string;
     confirm_password: string;
-};
+}

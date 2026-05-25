@@ -3,7 +3,7 @@ import type { LoginCredentials, TokenResponse, RefreshResponse } from "./types";
 import {
     tokenResponseSchema,
     refreshResponseSchema,
-} from "./schemas/tokenSchema";
+} from "@/features/auth/schemas/tokenSchema";
 
 export const authApi = {
     login: async (credentials: LoginCredentials): Promise<TokenResponse> => {
@@ -16,6 +16,7 @@ export const authApi = {
         return refreshResponseSchema.parse(res.data);
     },
 
+    // Respostas intencionalmente ignoradas (fire-and-forget) — sem parse Zod
     verify: (token: string) => api.post("/api/token/verify/", { token }),
 
     blacklist: (refresh: string) =>

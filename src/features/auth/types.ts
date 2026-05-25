@@ -1,5 +1,8 @@
 import type { ProfileUser } from "@/features/profile/types";
-export type { TokenResponse, RefreshResponse } from "./schemas/tokenSchema";
+export type {
+    TokenResponse,
+    RefreshResponse,
+} from "@/features/auth/schemas/tokenSchema";
 
 export interface LoginCredentials {
     username: string;

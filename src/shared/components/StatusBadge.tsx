@@ -28,7 +28,11 @@ const statusConfig: Record<string, { label: string; className: string }> = {
     },
 };
 
-export function StatusBadge({ status }: { status: string }) {
+interface StatusBadgeProps {
+    status: string;
+}
+
+export function StatusBadge({ status }: StatusBadgeProps) {
     const config = statusConfig[status] || {
         label: status,
         className: "bg-muted text-muted-foreground border-transparent",

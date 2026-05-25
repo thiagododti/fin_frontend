@@ -58,7 +58,7 @@ export function UserDialog({ onSuccess, onClose, editData }: UserDialogProps) {
         setPhotoFile,
         fileInputRef,
         onSubmit,
-    } = useUserForm({ open, editData, onSuccess: handleSuccess, onClose });
+    } = useUserForm({ editData, onSuccess: handleSuccess, onClose });
 
     const handleOpenChange = (v: boolean) => {
         setOpen(v);
@@ -152,80 +152,50 @@ export function UserDialog({ onSuccess, onClose, editData }: UserDialogProps) {
                                                 )}
                                             />
                                         </div>
-                                        <FormField
-                                            control={form.control}
-                                            name="email"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="text-sm text-foreground">
-                                                        Email
-                                                    </FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            type="email"
-                                                            placeholder="email@exemplo.com"
-                                                            className="bg-secondary border-border"
-                                                            {...field}
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <FormField
+                                                control={form.control}
+                                                name="email"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="text-sm text-foreground">
+                                                            Email
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                type="email"
+                                                                placeholder="email@exemplo.com"
+                                                                className="bg-secondary border-border"
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="birth_date"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="text-sm text-foreground">
+                                                            Nascimento
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                type="date"
+                                                                className="bg-secondary border-border"
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <Separator className="bg-border" />
-
-                            {/* â”€â”€ Contato & Organização â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-                            <div className="space-y-4">
-                                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                                    Contato & Organização
-                                </p>
-                                <div className="grid grid-cols-3 gap-3">
-                                    <FormField
-                                        control={form.control}
-                                        name="telephone"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="text-sm text-foreground">
-                                                    Telefone
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder="(00) 00000-0000"
-                                                        className="bg-secondary border-border"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="birth_date"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="text-sm text-foreground">
-                                                    Nascimento
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        type="date"
-                                                        className="bg-secondary border-border"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-
-                            <Separator className="bg-border" />
 
                             {/* â”€â”€ Permissões â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
                             <div className="space-y-4">

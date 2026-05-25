@@ -32,9 +32,7 @@ export interface UserEditData {
     email: string;
     first_name: string;
     last_name: string;
-    telephone?: string | null;
     birth_date?: string | null;
-    department?: number | null;
     is_active?: boolean;
     is_staff?: boolean;
     is_superuser?: boolean;

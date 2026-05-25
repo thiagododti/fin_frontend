@@ -18,14 +18,12 @@ export type { UserFormData, UserEditData };
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 interface UseUserFormProps {
-    open: boolean;
     editData?: UserEditData;
     onSuccess?: () => void;
     onClose?: () => void;
 }
 
 export function useUserForm({
-    open: _open,
     editData,
     onSuccess,
     onClose,
@@ -48,9 +46,7 @@ export function useUserForm({
                 email: editData.email,
                 first_name: editData.first_name,
                 last_name: editData.last_name,
-                telephone: editData.telephone || "",
                 birth_date: editData.birth_date || "",
-                department: editData.department ?? undefined,
                 is_active: editData.is_active ?? true,
                 is_staff: editData.is_staff ?? false,
                 is_superuser: editData.is_superuser ?? false,
@@ -103,8 +99,8 @@ export function useUserForm({
                     is_active: data.is_active,
                     is_staff: data.is_staff,
                     is_superuser: data.is_superuser,
-                    password: data.password!,
-                    password2: data.password2!,
+                    password: data.password ?? "",
+                    password2: data.password2 ?? "",
                     photo: photo.photoFile,
                 });
             }
