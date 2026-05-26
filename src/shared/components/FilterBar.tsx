@@ -12,8 +12,6 @@ import {
 import { Search, X } from "lucide-react";
 import type { FilterField } from "@/shared/types/filters";
 
-export type { FilterField };
-
 interface FilterBarProps {
     fields: FilterField[];
     onFilter: (values: Record<string, string>) => void;

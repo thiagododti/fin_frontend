@@ -11,8 +11,6 @@ import {
 } from "../schemas/profileSchema";
 import type { ProfileUpdate } from "../types";
 
-export type { ProfileFormValues };
-
 interface UseProfileFormProps {
     open: boolean;
     onClose: () => void;

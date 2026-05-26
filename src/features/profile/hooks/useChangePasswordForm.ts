@@ -9,8 +9,6 @@ import {
     type ChangePasswordFormData,
 } from "../schemas/changePasswordSchema";
 
-export type { ChangePasswordFormData };
-
 interface UseChangePasswordFormProps {
     onClose: () => void;
 }
