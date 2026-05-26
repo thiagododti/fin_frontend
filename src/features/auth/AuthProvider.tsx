@@ -1,36 +1,31 @@
-import React, {
-    createContext,
+import {
     useState,
     useEffect,
     useCallback,
     useRef,
+    type ReactNode,
 } from "react";
-import type { AuthContextType } from "./types";
+import { useQuery } from "@tanstack/react-query";
+import type { ProfileUser } from "@/shared/types/profileUser";
 import { authApi } from "./authService";
-import { profileApi } from "@/features/profile/api";
-import type { ProfileUser } from "@/features/profile/types";
+import { fetchMe } from "@/shared/services/meService";
 import { isTokenExpired, getTokenExpiry } from "@/lib/jwt";
 import { tokenStore } from "@/lib/tokenStore";
+import { AuthContext } from "./context";
 
 const MAX_TIMEOUT_MS = 24 * 60 * 60 * 1000; // 24h — evita overflow em setTimeout
 
-export const AuthContext = createContext<AuthContextType | undefined>(
-    undefined,
-);
+type SessionData = {
+    user: ProfileUser;
+    refreshToken: string | null;
+} | null;
 
-async function fetchCurrentUser(): Promise<ProfileUser | null> {
-    try {
-        return await profileApi.me();
-    } catch {
-        return null;
-    }
-}
+type AuthProviderProps = {
+    children: ReactNode;
+};
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-    children,
-}) => {
+export function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<ProfileUser | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
     const logoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const logout = useCallback(() => {
@@ -79,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         tokenStore.setAccessToken(tokens.access);
         tokenStore.setRefreshToken(tokens.refresh);
 
-        const fullUser = await fetchCurrentUser();
+        const fullUser = await fetchMe();
         if (!fullUser) {
             tokenStore.clear();
             throw new Error("Nao foi possivel carregar o usuario autenticado");
@@ -115,16 +110,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         };
     }, [logout, scheduleLogout]);
 
-    useEffect(() => {
-        const initAuth = async () => {
+    const hasToken = !!(
+        tokenStore.getAccessToken() || tokenStore.getRefreshToken()
+    );
+
+    const { data: sessionData, isLoading } = useQuery<SessionData>({
+        queryKey: ["auth", "session"],
+        queryFn: async () => {
             const accessToken = tokenStore.getAccessToken();
             const storedRefreshToken = tokenStore.getRefreshToken();
 
-            let validToken: string | null = null;
             let latestRefreshToken: string | null = storedRefreshToken;
 
             if (accessToken && !isTokenExpired(accessToken)) {
-                validToken = accessToken;
+                // Token de acesso válido, apenas buscar usuário
             } else if (
                 storedRefreshToken &&
                 !isTokenExpired(storedRefreshToken)
@@ -133,38 +132,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                     const tokens = await authApi.refresh(storedRefreshToken);
                     tokenStore.setAccessToken(tokens.access);
                     tokenStore.setRefreshToken(tokens.refresh);
-                    validToken = tokens.access;
                     latestRefreshToken = tokens.refresh;
                 } catch {
                     tokenStore.clear();
-                    latestRefreshToken = null;
+                    return null;
                 }
             } else {
                 tokenStore.clear();
-                latestRefreshToken = null;
+                return null;
             }
 
-            if (validToken) {
-                const fullUser = await fetchCurrentUser();
-                if (fullUser) {
-                    setUser(fullUser);
-                    if (latestRefreshToken) scheduleLogout(latestRefreshToken);
-                } else {
-                    tokenStore.clear();
-                }
+            const fullUser = await fetchMe();
+            if (!fullUser) {
+                tokenStore.clear();
+                return null;
             }
 
-            setIsLoading(false);
-        };
+            return { user: fullUser, refreshToken: latestRefreshToken };
+        },
+        enabled: hasToken,
+        retry: false,
+        staleTime: Infinity,
+    });
 
-        initAuth();
+    // Reage ao resultado da inicialização da sessão (não é data fetching)
+    useEffect(() => {
+        if (isLoading) return;
+        if (sessionData) {
+            setUser(sessionData.user);
+            if (sessionData.refreshToken)
+                scheduleLogout(sessionData.refreshToken);
+        }
+    }, [sessionData, isLoading, scheduleLogout]);
 
+    // Limpa o timer ao desmontar o componente
+    useEffect(() => {
         return () => {
             if (logoutTimerRef.current) {
                 clearTimeout(logoutTimerRef.current);
             }
         };
-    }, [scheduleLogout]);
+    }, []);
 
     const updateUser = useCallback((updated: ProfileUser) => {
         setUser(updated);
@@ -184,4 +192,4 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             {children}
         </AuthContext.Provider>
     );
-};
+}

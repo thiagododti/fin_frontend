@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, SearchX } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/app/routes";
 
 export default function NotFoundPage() {
     const navigate = useNavigate();
@@ -30,7 +31,7 @@ export default function NotFoundPage() {
                 </div>
 
                 <Button
-                    onClick={() => navigate("/dashboard")}
+                    onClick={() => navigate(ROUTES.dashboard)}
                     className="gap-2"
                 >
                     <ArrowLeft className="h-4 w-4" />

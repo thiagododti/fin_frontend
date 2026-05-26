@@ -1,11 +1,12 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
+import { env } from "@/config/env";
 import { isTokenExpired } from "./jwt";
 import { tokenStore } from "./tokenStore";
 import { refreshResponseSchema } from "@/features/auth/schemas/tokenSchema";
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: env.VITE_API_BASE_URL,
 });
 
 let isRefreshing = false;
@@ -84,7 +85,7 @@ api.interceptors.response.use(
 
             try {
                 const response = await axios.post(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/token/refresh/`,
+                    `${env.VITE_API_BASE_URL}/api/token/refresh/`,
                     { refresh: refreshToken },
                 );
                 const data = refreshResponseSchema.parse(response.data);
@@ -111,4 +112,4 @@ api.interceptors.response.use(
     },
 );
 
-export default api;
+export { api };

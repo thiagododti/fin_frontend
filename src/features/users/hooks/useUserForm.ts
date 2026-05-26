@@ -1,27 +1,22 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { getApiErrorMessage } from "@/lib/apiError";
-import { useCreateUser, useUpdateUser } from "../hooks";
-import { useUserPhotoUpload } from "./useUserPhotoUpload";
-import type { UserUpdate } from "../types";
+import { useCreateUser, useUpdateUser } from "./useUserQueries";
+import { usePhotoUpload } from "@/shared/hooks/usePhotoUpload";
+import type { UserUpdate, UserEditData } from "../types";
 import {
     userFormSchema,
     defaultValues,
     type UserFormData,
-    type UserEditData,
 } from "../schemas/userFormSchema";
-
-export type { UserFormData, UserEditData };
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
-interface UseUserFormProps {
+type UseUserFormProps = {
     editData?: UserEditData;
     onSuccess?: () => void;
     onClose?: () => void;
-}
+};
 
 export function useUserForm({
     editData,
@@ -30,14 +25,16 @@ export function useUserForm({
 }: UseUserFormProps) {
     const createMutation = useCreateUser();
     const updateMutation = useUpdateUser();
-    const photo = useUserPhotoUpload();
+    const photo = usePhotoUpload();
 
     const form = useForm<UserFormData>({
         resolver: zodResolver(userFormSchema),
+        mode: "onBlur",
         defaultValues,
     });
 
     const { reset, handleSubmit, setError } = form;
+    const { setPhotoPreview } = photo;
 
     useEffect(() => {
         if (editData) {
@@ -53,9 +50,9 @@ export function useUserForm({
                 password: "",
                 password2: "",
             });
-            photo.setPhotoPreview(editData.photo || null);
+            setPhotoPreview(editData.photo || null);
         }
-    }, [editData, reset]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [editData, reset, setPhotoPreview]);
 
     const submitHandler = async (data: UserFormData) => {
         if (!editData && !data.password) {
@@ -107,13 +104,8 @@ export function useUserForm({
             reset(defaultValues);
             photo.resetPhoto();
             onSuccess?.();
-        } catch (error) {
-            toast.error(
-                getApiErrorMessage(
-                    error,
-                    "Erro ao salvar usuário. Verifique os dados e tente novamente.",
-                ),
-            );
+        } catch {
+            // erro tratado pelo onError da mutation
         }
     };
 

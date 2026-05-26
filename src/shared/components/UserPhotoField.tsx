@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { RefObject } from "react";
 
-interface UserPhotoFieldProps {
+type UserPhotoFieldProps = {
     photoPreview: string | null;
     fileInputRef: RefObject<HTMLInputElement>;
     onPhotoChange: (file: File) => void;
     onPhotoRemove: () => void;
-}
+};
 
 export function UserPhotoField({
     photoPreview,

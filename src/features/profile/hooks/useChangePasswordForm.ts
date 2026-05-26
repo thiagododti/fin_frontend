@@ -1,17 +1,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { getApiErrorMessage } from "@/lib/apiError";
 import { useChangePassword } from "./useProfileQueries";
 import {
     changePasswordSchema,
     type ChangePasswordFormData,
 } from "../schemas/changePasswordSchema";
 
-interface UseChangePasswordFormProps {
+type UseChangePasswordFormProps = {
     onClose: () => void;
-}
+};
 
 export function useChangePasswordForm({ onClose }: UseChangePasswordFormProps) {
     const [showCurrent, setShowCurrent] = useState(false);
@@ -20,6 +18,12 @@ export function useChangePasswordForm({ onClose }: UseChangePasswordFormProps) {
 
     const form = useForm<ChangePasswordFormData>({
         resolver: zodResolver(changePasswordSchema),
+        mode: "onBlur",
+        defaultValues: {
+            current_password: "",
+            new_password: "",
+            confirm_password: "",
+        },
     });
 
     const { mutate, isPending } = useChangePassword();
@@ -27,17 +31,8 @@ export function useChangePasswordForm({ onClose }: UseChangePasswordFormProps) {
     const onSubmit = form.handleSubmit((data: ChangePasswordFormData) =>
         mutate(data, {
             onSuccess: () => {
-                toast.success("Senha alterada com sucesso!");
                 form.reset();
                 onClose();
-            },
-            onError: (error) => {
-                toast.error(
-                    getApiErrorMessage(
-                        error,
-                        "Falha ao alterar senha. Verifique a senha atual e tente novamente.",
-                    ),
-                );
             },
         }),
     );

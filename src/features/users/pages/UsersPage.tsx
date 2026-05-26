@@ -1,32 +1,42 @@
 import { useState } from "react";
 import { useTableState } from "@/shared/hooks/useTableState";
-import { useUsers } from "@/features/users/hooks";
+import { useUsers } from "@/features/users/hooks/useUserQueries";
 import type { UserFilters, User } from "@/features/users/types";
 import { PaginationControls } from "@/shared/components/PaginationControls";
 import { FilterBar } from "@/shared/components/FilterBar";
 import { UserDialog } from "@/features/users/components/UserDialog";
 import { UserTable } from "@/features/users/components/UserTable";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import {
     userFullNameFilter,
     userEmailFilter,
     userUsernameFilter,
-} from "@/features/users";
+} from "@/features/users/filters";
 
 const filterFields = [userFullNameFilter, userEmailFilter, userUsernameFilter];
 
 export default function UsersPage() {
     const { filters, page, setPage, handleFilter, handleClear } =
         useTableState<UserFilters>();
+    const [dialogOpen, setDialogOpen] = useState(false);
     const [editingUser, setEditingUser] = useState<User | null>(null);
 
     const { data, isLoading } = useUsers(filters, page);
 
     const handleEditUser = (user: User) => {
         setEditingUser(user);
+        setDialogOpen(true);
     };
 
     const handleDialogSuccess = () => {
         setEditingUser(null);
+        setDialogOpen(false);
+    };
+
+    const handleDialogOpenChange = (open: boolean) => {
+        setDialogOpen(open);
+        if (!open) setEditingUser(null);
     };
 
     return (
@@ -40,11 +50,10 @@ export default function UsersPage() {
                         Gerenciar usuários do sistema
                     </p>
                 </div>
-                <UserDialog
-                    editData={editingUser || undefined}
-                    onSuccess={handleDialogSuccess}
-                    onClose={() => setEditingUser(null)}
-                />
+                <Button size="sm" onClick={() => setDialogOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Novo Usuário
+                </Button>
             </div>
 
             <FilterBar
@@ -68,6 +77,13 @@ export default function UsersPage() {
                     />
                 </div>
             )}
+
+            <UserDialog
+                open={dialogOpen}
+                onOpenChange={handleDialogOpenChange}
+                editData={editingUser ?? undefined}
+                onSuccess={handleDialogSuccess}
+            />
         </div>
     );
 }

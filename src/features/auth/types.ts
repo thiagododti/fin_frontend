@@ -1,19 +1,19 @@
-import type { ProfileUser } from "@/features/profile/types";
+import type { ProfileUser } from "@/shared/types/profileUser";
 export type {
     TokenResponse,
     RefreshResponse,
 } from "@/features/auth/schemas/tokenSchema";
 
-export interface LoginCredentials {
+export type LoginCredentials = {
     username: string;
     password: string;
-}
+};
 
-export interface AuthContextType {
+export type AuthContextType = {
     user: ProfileUser | null;
     isAuthenticated: boolean;
     isLoading: boolean;
     login: (username: string, password: string) => Promise<void>;
     logout: () => void;
     updateUser: (user: ProfileUser) => void;
-}
+};

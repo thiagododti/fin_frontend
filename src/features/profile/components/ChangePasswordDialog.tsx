@@ -18,10 +18,10 @@ import {
 } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 
-interface ChangePasswordDialogProps {
+type ChangePasswordDialogProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-}
+};
 
 export function ChangePasswordDialog({
     open,

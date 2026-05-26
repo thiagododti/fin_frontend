@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 
-export function useUserPhotoUpload() {
+export function usePhotoUpload() {
     const [photoFile, setPhotoFile] = useState<File | undefined>(undefined);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);

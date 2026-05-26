@@ -25,8 +25,6 @@ export const userFormSchema = z
 
 export type UserFormData = z.infer<typeof userFormSchema>;
 
-export type { UserEditData } from "../types";
-
 export const defaultValues: UserFormData = {
     username: "",
     email: "",

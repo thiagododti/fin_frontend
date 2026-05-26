@@ -1,6 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { profileApi } from "../api";
+import { toast } from "sonner";
+import { profileApi } from "../profileService";
 import { profileKeys } from "../profile.keys";
+import { getApiErrorMessage } from "@/lib/apiError";
+import { useAuth } from "@/shared/hooks/useAuth";
 import type { ProfileUpdate, ChangePassword } from "../types";
 import type { ProfileUser } from "../schemas/profileUserSchema";
 
@@ -13,6 +16,7 @@ export function useMe() {
 
 export function useUpdateMe() {
     const qc = useQueryClient();
+    const { updateUser } = useAuth();
     return useMutation<ProfileUser, Error, ProfileUpdate>({
         mutationFn: (data) => profileApi.updateMe(data),
         onSuccess: (updated) => {
@@ -23,6 +27,16 @@ export function useUpdateMe() {
                     return { ...old, ...updated };
                 },
             );
+            updateUser(updated);
+            toast.success("Perfil atualizado com sucesso!");
+        },
+        onError: (error) => {
+            toast.error(
+                getApiErrorMessage(
+                    error,
+                    "Erro ao atualizar perfil. Tente novamente.",
+                ),
+            );
         },
     });
 }
@@ -30,5 +44,16 @@ export function useUpdateMe() {
 export function useChangePassword() {
     return useMutation({
         mutationFn: (data: ChangePassword) => profileApi.changePassword(data),
+        onSuccess: () => {
+            toast.success("Senha alterada com sucesso!");
+        },
+        onError: (error) => {
+            toast.error(
+                getApiErrorMessage(
+                    error,
+                    "Falha ao alterar senha. Verifique a senha atual e tente novamente.",
+                ),
+            );
+        },
     });
 }

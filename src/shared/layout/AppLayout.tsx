@@ -1,16 +1,10 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 import { AppSidebar } from "./AppSidebar";
 import { AppHeader } from "./AppHeader";
 import { ErrorBoundary } from "@/shared/components/ErrorBoundary";
+import { PageLoader } from "@/shared/components/PageLoader";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-
-const PageLoader = () => (
-    <div className="flex h-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-    </div>
-);
 
 export function AppLayout() {
     return (

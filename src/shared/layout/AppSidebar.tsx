@@ -8,7 +8,8 @@ import {
     UserRound,
     ChevronsUpDown,
 } from "lucide-react";
-import { useAuth } from "@/features/auth/hooks";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { ROUTES } from "@/app/routes";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
     DropdownMenu,
@@ -32,22 +33,12 @@ import {
 } from "@/components/ui/sidebar";
 import { ChangePasswordDialog } from "@/features/profile/components/ChangePasswordDialog";
 import { ProfileDialog } from "@/features/profile/components/ProfileDialog";
+import { getInitials } from "@/lib/utils";
 
 const topItems = [
-    { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-    { label: "Usuários", icon: Users, href: "/users" },
+    { label: "Dashboard", icon: LayoutDashboard, href: ROUTES.dashboard },
+    { label: "Usuários", icon: Users, href: ROUTES.users },
 ];
-
-function getInitials(
-    firstName: string,
-    lastName: string,
-    username: string,
-): string {
-    if (firstName || lastName) {
-        return `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase();
-    }
-    return username.slice(0, 2).toUpperCase();
-}
 
 export function AppSidebar() {
     const location = useLocation();

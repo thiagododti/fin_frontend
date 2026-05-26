@@ -19,10 +19,10 @@ import {
 import { UserPhotoField } from "@/shared/components/UserPhotoField";
 import { useProfileForm } from "../hooks/useProfileForm";
 
-interface ProfileDialogProps {
+type ProfileDialogProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-}
+};
 
 export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
     const {

@@ -12,11 +12,11 @@ import {
 import { Search, X } from "lucide-react";
 import type { FilterField } from "@/shared/types/filters";
 
-interface FilterBarProps {
+type FilterBarProps = {
     fields: FilterField[];
     onFilter: (values: Record<string, string>) => void;
     onClear: () => void;
-}
+};
 
 export function FilterBar({ fields, onFilter, onClear }: FilterBarProps) {
     const [values, setValues] = useState<Record<string, string>>({});

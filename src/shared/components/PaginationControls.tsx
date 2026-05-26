@@ -12,12 +12,12 @@ import {
     ChevronsRight,
 } from "lucide-react";
 
-interface PaginationControlsProps {
+type PaginationControlsProps = {
     count: number;
     page: number;
     onPageChange: (page: number) => void;
     pageSize?: number;
-}
+};
 
 export function PaginationControls({
     count,

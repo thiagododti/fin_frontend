@@ -1,6 +1,8 @@
-export type { User } from "./schemas/userSchema";
+import type { User } from "./schemas/userSchema";
 
-export interface UserCreate {
+export type { User };
+
+export type UserCreate = {
     username: string;
     first_name?: string;
     last_name?: string;
@@ -12,29 +14,30 @@ export interface UserCreate {
     is_active?: boolean;
     is_staff?: boolean;
     is_superuser?: boolean;
-}
+};
 
-export interface UserUpdate extends Omit<UserCreate, "password"> {
+export type UserUpdate = Omit<UserCreate, "password"> & {
     password?: string;
     password2?: string;
-}
+};
 
-export interface UserFilters {
+export type UserFilters = {
     username?: string;
     email?: string;
     full_name?: string;
     [key: string]: unknown;
-}
+};
 
-export interface UserEditData {
-    id: number;
-    username: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-    birth_date?: string | null;
-    is_active?: boolean;
-    is_staff?: boolean;
-    is_superuser?: boolean;
-    photo?: string | null;
-}
+export type UserEditData = Pick<
+    User,
+    | "id"
+    | "username"
+    | "email"
+    | "first_name"
+    | "last_name"
+    | "birth_date"
+    | "is_active"
+    | "is_staff"
+    | "is_superuser"
+    | "photo"
+>;

@@ -1,4 +1,4 @@
-import api from "@/lib/axios";
+import { api } from "@/lib/axios";
 import type { ProfileUpdate, ChangePassword } from "./types";
 import {
     profileUserSchema,
@@ -32,7 +32,7 @@ export const profileApi = {
         return profileUserSchema.parse(res.data);
     },
 
-    // Resposta intencionalmente ignorada (fire-and-forget) — sem parse Zod
-    changePassword: (data: ChangePassword) =>
-        api.post("/api/users/change-password/", data),
+    changePassword: async (data: ChangePassword): Promise<void> => {
+        await api.post("/api/users/change-password/", data);
+    },
 };

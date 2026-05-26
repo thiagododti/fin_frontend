@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function Login() {
+export default function LoginPage() {
     const { form, onSubmit, isSubmitting } = useLoginForm();
 
     return (

@@ -1,4 +1,4 @@
-import api from "@/lib/axios";
+import { api } from "@/lib/axios";
 import type { UserCreate, UserUpdate, UserFilters } from "./types";
 import { paginatedResponseSchema } from "@/shared/types/api";
 import { userSchema } from "./schemas/userSchema";

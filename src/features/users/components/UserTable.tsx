@@ -15,26 +15,15 @@ import {
     AvatarFallback,
     AvatarBadge,
 } from "@/components/ui/avatar";
-import { cn, formatDate } from "@/lib/utils";
+import { cn, formatDate, getInitials } from "@/lib/utils";
 import type { User } from "../types";
 import type { PaginatedResponse } from "@/shared/types/api";
 
-interface UserTableProps {
+type UserTableProps = {
     data: PaginatedResponse<User> | undefined;
     isLoading: boolean;
     onEdit: (user: User) => void;
-}
-
-function getInitials(
-    firstName: string,
-    lastName: string,
-    username: string,
-): string {
-    if (firstName || lastName) {
-        return `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase();
-    }
-    return username.slice(0, 2).toUpperCase();
-}
+};
 
 export function UserTable({ data, isLoading, onEdit }: UserTableProps) {
     if (isLoading) {

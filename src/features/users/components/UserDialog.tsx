@@ -1,12 +1,10 @@
-﻿import { useState, useEffect } from "react";
-import { useUserForm } from "../hooks";
-import type { UserEditData } from "../hooks";
+﻿import { useUserForm } from "../hooks/useUserForm";
+import type { UserEditData } from "../types";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +21,6 @@ import {
 } from "@/components/ui/form";
 import {
     Loader2,
-    Plus,
     UserRound,
     ShieldCheck,
     CircleCheck,
@@ -31,24 +28,21 @@ import {
 } from "lucide-react";
 import { UserPhotoField } from "@/shared/components/UserPhotoField";
 
-interface UserDialogProps {
+type UserDialogProps = {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
     onSuccess?: () => void;
     onClose?: () => void;
     editData?: UserEditData;
-}
+};
 
-export function UserDialog({ onSuccess, onClose, editData }: UserDialogProps) {
-    const [open, setOpen] = useState(false);
-
-    useEffect(() => {
-        if (editData) setOpen(true);
-    }, [editData]);
-
-    const handleSuccess = () => {
-        setOpen(false);
-        onSuccess?.();
-    };
-
+export function UserDialog({
+    open,
+    onOpenChange,
+    onSuccess,
+    onClose,
+    editData,
+}: UserDialogProps) {
     const {
         form,
         onDialogClose,
@@ -58,21 +52,15 @@ export function UserDialog({ onSuccess, onClose, editData }: UserDialogProps) {
         setPhotoFile,
         fileInputRef,
         onSubmit,
-    } = useUserForm({ editData, onSuccess: handleSuccess, onClose });
+    } = useUserForm({ editData, onSuccess, onClose });
 
     const handleOpenChange = (v: boolean) => {
-        setOpen(v);
+        onOpenChange(v);
         if (!v) onDialogClose();
     };
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogTrigger asChild>
-                <Button size="sm">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Novo Usuário
-                </Button>
-            </DialogTrigger>
             <DialogContent className="bg-card border-border sm:max-w-[900px]">
                 <DialogHeader className="pb-3">
                     <DialogTitle className="text-foreground flex items-center gap-2 text-lg">
