@@ -22,6 +22,7 @@ export default tseslint.config(
             "react-refresh": reactRefresh,
         },
         rules: {
+            "@typescript-eslint/consistent-type-definitions": ["error", "type"],
             ...reactHooks.configs.recommended.rules,
             "react-refresh/only-export-components": [
                 "warn",
@@ -29,7 +30,13 @@ export default tseslint.config(
             ],
             "@typescript-eslint/no-unused-vars": "error",
             "@typescript-eslint/no-explicit-any": "error",
-            "@typescript-eslint/explicit-function-return-type": ["warn"],
+            "@typescript-eslint/explicit-function-return-type": [
+                "warn",
+                {
+                    allowExpressions: true,
+                    allowTypedFunctionExpressions: true,
+                },
+            ],
             "@typescript-eslint/explicit-member-accessibility": [
                 "warn",
                 { accessibility: "explicit" },
