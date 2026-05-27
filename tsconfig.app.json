@@ -1,25 +1,30 @@
 {
     "compilerOptions": {
-        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-        "target": "es2023",
-        "lib": ["ES2023", "DOM"],
-        "module": "esnext",
-        "types": ["vite/client"],
-        "skipLibCheck": true,
+        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo", // Armazenar informações de construção para acelerar compilações incrementais
+        "target": "es2023", // Alvo de compilação ES2023 para aproveitar os recursos modernos do JavaScript
+        "lib": ["ES2023", "DOM"], // Incluir bibliotecas ES2023 e DOM para suporte a recursos modernos e APIs do navegador
+        "module": "esnext", // Usar o sistema de módulos ESNext para compatibilidade com Vite
+        "types": ["vite/client"], // Incluir tipos do Vite para suporte a importação de arquivos e HMR
+        "skipLibCheck": true, // Pular verificação de tipos em arquivos de declaração para acelerar a compilação
 
         /* Bundler mode */
-        "moduleResolution": "bundler",
-        "allowImportingTsExtensions": true,
-        "verbatimModuleSyntax": true,
-        "moduleDetection": "force",
-        "noEmit": true,
-        "jsx": "react-jsx",
+        "moduleResolution": "bundler", // Usar resolução de módulo otimizada para bundlers modernos como Vite
+        "allowImportingTsExtensions": true, // Permitir importação de arquivos TypeScript com extensão .ts
+        "verbatimModuleSyntax": true, // Permitir sintaxe de módulo verbatim para garantir que as importações sejam mantidas como estão
+        "moduleDetection": "force", // Forçar detecção de módulos para garantir que arquivos .ts sejam tratados como módulos
+        "noEmit": true, // Não emitir arquivos de saída, pois o Vite lida com isso
+        "jsx": "react-jsx", // Usar a nova transformação JSX do React 17+
 
         /* Linting */
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "erasableSyntaxOnly": true,
-        "noFallthroughCasesInSwitch": true
+        "noUnusedLocals": true, // Evitar variáveis não utilizadas
+        "noUnusedParameters": true, // Evitar parâmetros não utilizados
+        "erasableSyntaxOnly": true, // Permitir remover código que não tem efeito colateral
+        "noFallthroughCasesInSwitch": true, // Evitar casos de switch sem break
+        "forceConsistentCasingInFileNames": true, // Garantir que os arquivos sejam importados com a mesma capitalização
+        "strict": true, // Ativar todas as verificações de tipo estritas
+        "paths": {
+            "@/*": ["./src/*"] // Configurar alias para facilitar importações a partir da pasta src
+        }
     },
-    "include": ["src"]
+    "include": ["src"] // Incluir apenas a pasta src para compilação
 }
