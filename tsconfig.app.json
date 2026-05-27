@@ -4,7 +4,7 @@
         "target": "es2023", // Alvo de compilação ES2023 para aproveitar os recursos modernos do JavaScript
         "lib": ["ES2023", "DOM"], // Incluir bibliotecas ES2023 e DOM para suporte a recursos modernos e APIs do navegador
         "module": "esnext", // Usar o sistema de módulos ESNext para compatibilidade com Vite
-        "types": ["vite/client"], // Incluir tipos do Vite para suporte a importação de arquivos e HMR
+        "types": ["vite/client", "react", "react-dom", "node"], // Incluir tipos do Vite para suporte a importação de arquivos e HMR
         "skipLibCheck": true, // Pular verificação de tipos em arquivos de declaração para acelerar a compilação
 
         /* Bundler mode */
