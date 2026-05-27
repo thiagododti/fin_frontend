@@ -1,4 +1,4 @@
-import type { ApiUrl } from '@/shared/api/type';
+import type { ApiUrl } from '@/shared/types/ApiUrl';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 if (!apiUrl) {
