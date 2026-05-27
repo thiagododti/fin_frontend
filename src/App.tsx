@@ -1,11 +1,13 @@
-import { RouterProvider } from "react-router-dom";
-import { Providers } from "@/app/providers";
-import { router } from "@/app/router";
+import { useState } from "react";
 
-export default function App() {
+import "./App.css";
+
+function App() {
     return (
-        <Providers>
-            <RouterProvider router={router} />
-        </Providers>
+        <>
+            <div>Thiago Teste</div>
+        </>
     );
 }
+
+export default App;

@@ -1,24 +1,7 @@
 {
-    "compilerOptions": {
-        "allowJs": false,
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "forceConsistentCasingInFileNames": true,
-        "paths": {
-            "@/*": ["./src/*"]
-        },
-        "skipLibCheck": true
-    },
     "files": [],
     "references": [
-        {
-            "path": "./tsconfig.app.json"
-        },
-        {
-            "path": "./tsconfig.node.json"
-        }
+        { "path": "./tsconfig.app.json" },
+        { "path": "./tsconfig.node.json" }
     ]
 }
