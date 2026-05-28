@@ -1,7 +1,7 @@
 import type { InternalAxiosRequestConfig } from 'axios';
 import { getAccessToken } from '@/features/auth/storage/auth-storage';
 
-export function RequestInterceptor(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
+export function requestInterceptor(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
     const accessToken = getAccessToken();
 
     if (accessToken) {

@@ -1,12 +1,12 @@
 import { AxiosError } from 'axios';
-import type { AppError } from '@/shared/types/app-error';
-import type { ErrorResponse } from '@/shared/types/ErrorResponse';
+import type { AppError } from '@/shared/types/AppError';
+import type { ResponseError } from '@/shared/types/ResponseError';
 
 export function normalizeApiError(error: unknown): AppError {
     if (error instanceof AxiosError) {
-        const status = error.response?.status || 500;
+        const status = error.response?.status ?? 500;
 
-        const data = error.response?.data as ErrorResponse;
+        const data = error.response?.data as ResponseError;
 
         return {
             status,
