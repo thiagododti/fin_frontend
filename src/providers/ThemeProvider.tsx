@@ -1,5 +1,5 @@
-import type { React } from '@/shared/types/React';
+import type { ChildrenProps } from '@/shared/types/ChildrenProps';
 
-export function ThemeProvider({ children }: React) {
+export function ThemeProvider({ children }: ChildrenProps) {
     return <>{children}</>;
 }

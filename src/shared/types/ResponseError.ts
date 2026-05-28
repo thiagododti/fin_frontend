@@ -1,3 +1,5 @@
 export type ResponseError = {
-    detail: string;
+    detail?: string;
+    code?: string;
+    [field: string]: string | string[] | undefined;
 };

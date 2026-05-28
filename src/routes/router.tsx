@@ -6,6 +6,8 @@ import { PrivateLayout } from '@/layouts/PrivateLayout';
 import { paths } from '@/routes/paths';
 import { Login } from '@/features/auth/pages/LoginPage';
 import { Home } from '@/features/home/pages/HomePage';
+import { Forbidden } from '@/shared/pages/ForbiddenPage';
+import { NotFound } from '@/shared/pages/NotFoundPage';
 
 export const router = createBrowserRouter([
     {
@@ -25,5 +27,13 @@ export const router = createBrowserRouter([
                 element: <Home />,
             },
         ],
+    },
+    {
+        path: paths.notfound,
+        element: <NotFound />,
+    },
+    {
+        path: paths.forbidden,
+        element: <Forbidden />,
     },
 ]);

@@ -11,6 +11,7 @@ export function normalizeApiError(error: unknown): AppError {
         return {
             status,
             message: data?.detail ?? 'Erro inesperado',
+            code: data?.code,
         };
     }
 

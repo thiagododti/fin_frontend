@@ -1,9 +1,9 @@
 import { QueryProvider } from '@/providers/QueryProvider';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
-import type { React } from '@/shared/types/React';
+import type { ChildrenProps } from '@/shared/types/ChildrenProps';
 
-export function AppProviders({ children }: React) {
+export function AppProviders({ children }: ChildrenProps) {
     return (
         <QueryProvider>
             <ThemeProvider>
