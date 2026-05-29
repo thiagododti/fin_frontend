@@ -6,4 +6,4 @@ export type Login = {
 };
 
 
-type LoginForm = z.infer<typeof loginSchema>;
+export type LoginForm = z.infer<typeof loginSchema>;
