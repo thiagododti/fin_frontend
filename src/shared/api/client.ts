@@ -7,12 +7,9 @@ const { apiUrl } = env;
 
 export const api = axios.create({
     baseURL: apiUrl,
-    headers: {
-        'Content-Type': 'application/json',
-    },
     timeout: 10000, // 10 seconds
 });
 
 api.interceptors.request.use(requestInterceptor);
 
-api.interceptors.response.use(response => response, responseInterceptor);
+api.interceptors.response.use((response) => response, responseInterceptor);

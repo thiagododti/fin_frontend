@@ -1,4 +1,4 @@
-import type { InternalAxiosRequestConfig } from 'axios';
+import { type InternalAxiosRequestConfig } from 'axios';
 import { getAccessToken, getRefreshToken, setTokens } from '@/features/auth/storage/auth-storage';
 import { isTokenExpired } from '@/shared/api/auth/jwt';
 import { refreshToken } from '@/shared/services/refresh-service';
@@ -10,48 +10,60 @@ import {
     startRefresh,
     waitForRefresh,
 } from '@/shared/api/auth/refresh-lock';
+import { shouldConvertToFormData, toFormData } from '@/shared/helpers/form-data';
 
-export async function requestInterceptor(
-    config: InternalAxiosRequestConfig,
-): Promise<InternalAxiosRequestConfig> {
-    let accessToken = getAccessToken();
+function transformRequestData(data: unknown): unknown {
+    if (shouldConvertToFormData(data)) {
+        return toFormData(data);
+    }
+    return data;
+}
+
+async function ensureValidToken(): Promise<string | null> {
+    const accessToken = getAccessToken();
 
     if (!accessToken) {
-        return config;
+        return null;
     }
-
     if (isTokenExpired(accessToken)) {
-        // Já existe um refresh em andamento — entra na fila e aguarda
         if (isRefreshInProgress()) {
             const newToken = await waitForRefresh();
             if (newToken) {
-                config.headers.Authorization = `Bearer ${newToken}`;
+                return newToken;
             }
-            return config;
+            return null;
         }
-
         const refresh = getRefreshToken();
 
         if (!refresh || isTokenExpired(refresh)) {
             await logoutService();
-            return config;
+            return null;
         }
-
         startRefresh();
 
         try {
             const newTokens = await refreshToken({ refresh });
             setTokens(newTokens);
-            resolveRefresh(newTokens.access); // libera a fila com o novo token
-            accessToken = newTokens.access;
+            resolveRefresh(newTokens.access);
+            return newTokens.access;
         } catch {
-            failRefresh(); // libera a fila com null
+            failRefresh();
             await logoutService();
-            return config;
+            return null;
         }
     }
+    return accessToken;
+}
 
-    config.headers.Authorization = `Bearer ${accessToken}`;
+export async function requestInterceptor(
+    config: InternalAxiosRequestConfig,
+): Promise<InternalAxiosRequestConfig> {
+    const accessToken = await ensureValidToken();
+    if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    config.data = transformRequestData(config.data);
 
     return config;
 }

@@ -1,19 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { decodeJwt, isTokenExpired } from '@/shared/api/auth/jwt';
 import type { TokenBody } from '@/features/auth/types/Tokens';
-
-function createFakeJwt(payload: object) {
-    const header = {
-        alg: 'HS256',
-        typ: 'JWT',
-    };
-
-    const encodedHeader = Buffer.from(JSON.stringify(header)).toString('base64url');
-
-    const encodedPayload = Buffer.from(JSON.stringify(payload)).toString('base64url');
-
-    return `${encodedHeader}.${encodedPayload}.fake-signature`;
-}
+import { createFakeJwt } from '@/shared/utils/create-fake-jwt';
 
 describe('Teste de decodeJwt', () => {
     it('Deve decodificar um JWT válido', () => {
@@ -32,23 +20,9 @@ describe('Teste de decodeJwt', () => {
     });
 });
 
-const expiredTokenBody: TokenBody = {
-    exp: Math.floor(Date.now() / 1000) - 10, // Token expirado há 10 segundos
-    user_id: '1',
-    token_type: 'access',
-    iat: Math.floor(Date.now() / 1000) - 3600, // Emitido há 1 hora
-    jti: '1234567890',
-};
-const expiredToken = createFakeJwt(expiredTokenBody);
+const expiredToken = createFakeJwt(0);
 
-const validTokenBody: TokenBody = {
-    exp: Math.floor(Date.now() / 1000) + 300, // Token válido por mais 300 segundos
-    user_id: '1',
-    token_type: 'refresh',
-    iat: Math.floor(Date.now() / 1000) - 3600, // Emitido há 1 hora
-    jti: '1234567890',
-};
-const validToken = createFakeJwt(validTokenBody);
+const validToken = createFakeJwt(300);
 
 describe('Teste de isTokenExpired', () => {
     it('Deve retornar true para um token expirado', () => {
