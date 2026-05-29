@@ -5,6 +5,8 @@ import { PrivateLayout } from '@/layouts/PrivateLayout';
 
 import { paths } from '@/routes/paths';
 import { Login } from '@/features/auth/pages/LoginPage';
+import { Forbidden } from '@/shared/pages/ForbiddenPage';
+import { NotFound } from '@/shared/pages/NotFoundPage';
 import { Home } from '@/features/home/pages/HomePage';
 
 export const router = createBrowserRouter([
@@ -12,7 +14,7 @@ export const router = createBrowserRouter([
         element: <PublicLayout />,
         children: [
             {
-                path: paths.login,
+                path: paths.login.path,
                 element: <Login />,
             },
         ],
@@ -21,9 +23,17 @@ export const router = createBrowserRouter([
         element: <PrivateLayout />,
         children: [
             {
-                path: paths.home,
+                path: paths.home.path,
                 element: <Home />,
             },
         ],
+    },
+    {
+        path: paths.notfound.path,
+        element: <NotFound />,
+    },
+    {
+        path: paths.forbidden.path,
+        element: <Forbidden />,
     },
 ]);

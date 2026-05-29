@@ -1,5 +1,5 @@
-import type { Props } from '@/shared/types/Children';
+import type { ChildrenProps } from '@/shared/types/ChildrenProps';
 
-export function ThemeProvider({ children }: Props) {
+export function ThemeProvider({ children }: ChildrenProps) {
     return <>{children}</>;
 }
